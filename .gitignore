@@ -1,0 +1,30 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# local environment files
+.env*
+!.env.example
+.env
+.env.local
+.env.*.local
+.env*.local
+
+# logs and tooling
+*.log
+.DS_Store
+*.tsbuildinfo
+
+# vercel
+.vercel/
+
+# OS
+.DS_Store
+Thumbs.db
