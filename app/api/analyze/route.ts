@@ -4,6 +4,8 @@ import {
 import { AnalysisOutputError } from "@/lib/ai/analysisContract";
 import { ZhipuConfigurationError, ZhipuProviderError } from "@/lib/ai/providers/zhipu";
 
+export const maxDuration = 120;
+
 const ACCEPTED_TYPES = new Set(["image/png", "image/jpeg", "image/webp"]);
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 

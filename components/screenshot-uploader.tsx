@@ -5,6 +5,7 @@ import { Check, Clipboard, FileImage, LoaderCircle, RefreshCw, Upload } from "lu
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { createInboxItem } from "@/lib/supabase/inboxItems";
 import type { AnalyzeApiResponse } from "@/types/analysis";
 
 const ACCEPTED_TYPES = ["image/png", "image/jpeg", "image/webp"];
@@ -76,10 +77,13 @@ export function ScreenshotUploader({ onCancel, onComplete }: { onCancel: () => v
       const response = await fetch("/api/analyze", { method: "POST", body: formData });
       const payload = (await response.json()) as AnalyzeApiResponse | { error?: string };
       if (!response.ok) throw new Error("error" in payload && payload.error ? payload.error : "Upload failed. Please try again.");
+      const analyzed = payload as AnalyzeApiResponse;
+      const item = await createInboxItem(file, analyzed.result);
+      const persistedPayload: AnalyzeApiResponse = { ...analyzed, id: item.id };
       window.clearInterval(progressTimer);
       setProgress(100);
-      sessionStorage.setItem("ai-inbox:analysis", JSON.stringify(payload));
-      window.setTimeout(() => onComplete(payload as AnalyzeApiResponse), 350);
+      sessionStorage.setItem("ai-inbox:analysis", JSON.stringify(persistedPayload));
+      window.setTimeout(() => onComplete(persistedPayload), 350);
     } catch (uploadError) {
       window.clearInterval(progressTimer);
       setUploading(false);

@@ -4,7 +4,7 @@ export type InboxItemKind = "event" | "product" | "place" | "task" | "knowledge"
 
 export type AnalysisStatus = "idle" | "processing" | "needs-review" | "complete";
 
-export type Intent = "Attend" | "Shop" | "Go" | "Do" | "Remember";
+export type Intent = "Attend" | "Shop" | "Go" | "Do" | "Remember" | "Other";
 
 export type ItemAction = {
   label: string;

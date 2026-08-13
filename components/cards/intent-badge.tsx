@@ -1,4 +1,4 @@
-import { Bookmark, CalendarDays, MapPin, ShoppingBag, SquareCheckBig } from "lucide-react";
+import { Bookmark, CalendarDays, CircleHelp, MapPin, ShoppingBag, SquareCheckBig } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import type { Intent } from "@/types";
@@ -9,6 +9,7 @@ const intentStyles = {
   Go: { icon: MapPin, className: "bg-violet-50 text-violet-600" },
   Do: { icon: SquareCheckBig, className: "bg-amber-50 text-amber-600" },
   Remember: { icon: Bookmark, className: "bg-blue-50 text-blue-600" },
+  Other: { icon: CircleHelp, className: "bg-slate-50 text-slate-600" },
 } satisfies Record<Intent, { icon: typeof CalendarDays; className: string }>;
 
 export function IntentBadge({ intent, compact = false }: { intent: Intent; compact?: boolean }) {

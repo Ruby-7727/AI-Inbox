@@ -1,9 +1,11 @@
 import { Brand } from "@/components/layout/brand";
 import { Sidebar } from "@/components/layout/sidebar";
 import { UploadProvider } from "@/components/actions/upload-provider";
+import { AnonymousAuthProvider } from "@/components/auth/anonymous-auth-provider";
 
 export function AppShell({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
+    <AnonymousAuthProvider>
     <UploadProvider>
       <div className="min-h-screen md:grid md:grid-cols-[var(--sidebar-width)_minmax(0,1fr)]">
         <Sidebar />
@@ -17,5 +19,6 @@ export function AppShell({ children }: Readonly<{ children: React.ReactNode }>) 
         </div>
       </div>
     </UploadProvider>
+    </AnonymousAuthProvider>
   );
 }

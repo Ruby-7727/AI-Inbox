@@ -20,10 +20,13 @@ import {
 
 import { ActionButton } from "@/components/actions/action-button";
 import { ConfidenceBadge } from "@/components/cards/confidence-badge";
+import { PersistedItemDetail } from "@/components/inbox/persisted-item-detail";
 
 export default async function ResultDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  return id === "send-ppt-to-amy" ? <LowConfidenceDetail /> : <EventDetail />;
+  if (id === "send-ppt-to-amy") return <LowConfidenceDetail />;
+  if (id === "eason-chan-concert") return <EventDetail />;
+  return <PersistedItemDetail id={id} />;
 }
 
 function EventDetail() {

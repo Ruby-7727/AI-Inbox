@@ -11,11 +11,7 @@ export function ActionCard({ item }: { item: InboxItem }) {
       <IntentBadge intent={item.intent} compact />
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-3">
-          {item.id === "eason-chan-concert" || item.id === "send-ppt-to-amy" ? (
-            <Link className="truncate text-xl font-semibold tracking-[-0.02em] hover:text-primary" href={`/inbox/${item.id}`}>{item.title}</Link>
-          ) : (
-            <h3 className="truncate text-xl font-semibold tracking-[-0.02em]">{item.title}</h3>
-          )}
+          <Link className="truncate text-xl font-semibold tracking-[-0.02em] hover:text-primary" href={`/inbox/${item.id}`}>{item.title}</Link>
           {item.isNew ? <span className="rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-primary">New</span> : null}
         </div>
         <p className="mt-2 flex items-center gap-2 text-sm text-slate-600">

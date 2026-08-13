@@ -1,9 +1,8 @@
 import { Clipboard, Search } from "lucide-react";
 
 import { UploadButton } from "@/components/actions/upload-button";
-import { ActionCard } from "@/components/cards/action-card";
 import { Header } from "@/components/layout/header";
-import { inboxItems } from "@/lib/mock-data";
+import { InboxContent } from "@/components/inbox/inbox-content";
 
 export const metadata = { title: "Inbox" };
 
@@ -25,12 +24,7 @@ export default function InboxPage() {
         Paste a screenshot with ⌘V / Ctrl+V
       </button>
 
-      <section className="mt-9">
-        <h2 className="text-xl font-semibold">Recent items</h2>
-        <div className="mt-4 space-y-3">
-          {inboxItems.map((item) => <ActionCard key={item.id} item={item} />)}
-        </div>
-      </section>
+      <InboxContent />
     </>
   );
 }

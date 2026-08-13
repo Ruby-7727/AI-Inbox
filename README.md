@@ -2,7 +2,7 @@
 
 AI Inbox is an AI Product Manager portfolio prototype that turns screenshots into structured items and suggested actions.
 
-This repository contains a clickable frontend prototype with screenshot selection, preview, validation, upload progress, processing, and structured Zhipu AI vision analysis. Authentication and persistence are not implemented yet.
+This repository contains a clickable prototype with screenshot selection, preview, validation, upload progress, structured Zhipu AI vision analysis, invisible Supabase anonymous authentication, and per-user persistence.
 
 ## Product scope
 
@@ -21,13 +21,13 @@ The first implementation should optimize this happy path and its recovery states
 
 - **Next.js App Router** owns pages, layouts, server rendering, and API routes.
 - **UI modules** are split into layout, inbox, cards, actions, and shadcn-style primitives.
-- **Supabase** will own anonymous users, PostgreSQL records, and private screenshot storage.
+- **Supabase** owns anonymous users, RLS-protected PostgreSQL records, and private screenshot storage.
 - **Zhipu AI GLM-4.5V** is called only from server-side API routes; credentials never enter the browser bundle.
 - **Vercel** will host the single Next.js application. Processing should remain request-based and lightweight enough for free-tier limits.
 
 Suggested data flow:
 
-`browser upload -> API analysis route -> Zhipu GLM-4.5V structured result -> review/detail screen`
+`browser upload -> Zhipu analysis route -> private Supabase screenshot + RLS row -> review/detail screen`
 
 ## Route map
 
@@ -61,6 +61,8 @@ pnpm dev
 ```
 
 Copy `.env.example` to `.env.local` and set `ZHIPU_API_KEY` before analyzing screenshots. The active model is `glm-4.5v`.
+
+For persistence, also set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, enable Anonymous Sign-Ins, and run the SQL described in `supabase/README.md`.
 
 Verify the response contract without making API calls:
 

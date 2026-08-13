@@ -1,2 +1,3 @@
-// Supabase browser/server clients will be added with authentication in the next phase.
-export {};
+export { ensureAnonymousUser } from "@/lib/supabase/auth";
+export { getSupabaseBrowserClient } from "@/lib/supabase/client";
+export { createInboxItem, getInboxItemById, getInboxItems, updateInboxItem } from "@/lib/supabase/inboxItems";
