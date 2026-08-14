@@ -17,10 +17,14 @@ const actionIcons: Record<ActionType, LucideIcon> = {
 export function inboxRowToCard(item: InboxItemRow): InboxItem {
   const visibleFields = (item.structured_data.fields ?? []).filter((field) => field.value);
   const suggestions = item.structured_data.actions ?? [];
-  const frameworkActions: InboxItem["actions"] = mapSuggestedActions(item.intent, suggestions).map((action) => ({
+  const frameworkActions: InboxItem["actions"] = mapSuggestedActions(item.intent, suggestions, {
+    fields: item.structured_data.fields,
+    locationFallback: item.title,
+  }).map((action) => ({
     label: action.title,
     icon: actionIcons[action.type],
     actionType: action.type,
+    location: action.location,
     primary: action.type === "calendar",
   }));
   const supportsPersistentSave = (item.intent === "shop" || item.intent === "remember") && suggestions.includes("save");

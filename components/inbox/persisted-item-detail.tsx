@@ -27,7 +27,10 @@ export function PersistedItemDetail({ id }: { id: string }) {
   if (item === undefined) return <div className="h-96 animate-pulse rounded-xl border bg-white/60" aria-label="Loading item" />;
   if (item === null) return <DetailMessage title="Item not found" detail="This item does not exist or belongs to another user." />;
 
-  const suggestedActions = mapSuggestedActions(item.intent, item.structured_data.actions ?? []);
+  const suggestedActions = mapSuggestedActions(item.intent, item.structured_data.actions ?? [], {
+    fields: item.structured_data.fields,
+    locationFallback: item.title,
+  });
 
   return (
     <div>

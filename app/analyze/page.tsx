@@ -61,7 +61,10 @@ function AnalysisResultCard({ analysis }: { analysis: AnalyzeApiResponse | null 
   }
 
   const { result } = analysis;
-  const suggestedActions = mapSuggestedActions(result.intent, result.actions);
+  const suggestedActions = mapSuggestedActions(result.intent, result.actions, {
+    fields: result.fields,
+    locationFallback: result.title,
+  });
   return (
     <div className="py-2">
       <Link className="inline-flex items-center gap-2 text-slate-600 hover:text-primary" href="/inbox"><ArrowLeft className="size-5" />Back to Inbox</Link>

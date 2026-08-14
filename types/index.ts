@@ -12,6 +12,7 @@ export type ItemAction = {
   icon: LucideIcon;
   primary?: boolean;
   actionType?: ActionType;
+  location?: string | null;
 };
 
 export type InboxItem = {

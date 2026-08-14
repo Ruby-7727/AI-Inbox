@@ -18,8 +18,8 @@ const actionIcons: Record<ActionIconIdentifier, LucideIcon> = {
   chart: ChartNoAxesColumnIncreasing,
 };
 
-export function ActionButton({ label, icon: FallbackIcon, primary, className, actionType }: { label: string; icon: LucideIcon; primary?: boolean; className?: string; actionType?: ActionType }) {
-  const [action, setAction] = useState<AIAction | null>(() => actionType ? { ...createAction(actionType), title: label } : null);
+export function ActionButton({ label, icon: FallbackIcon, primary, className, actionType, location }: { label: string; icon: LucideIcon; primary?: boolean; className?: string; actionType?: ActionType; location?: string | null }) {
+  const [action, setAction] = useState<AIAction | null>(() => actionType ? { ...createAction(actionType), title: label, location } : null);
   const [executing, setExecuting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 

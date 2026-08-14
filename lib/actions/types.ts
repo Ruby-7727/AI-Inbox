@@ -9,10 +9,12 @@ export interface AIAction {
   title: string;
   description: string;
   status: ActionStatus;
+  location?: string | null;
 }
 
 export type ActionExecutionResult = {
   success: boolean;
+  title?: string;
   message: string;
   action: AIAction;
 };

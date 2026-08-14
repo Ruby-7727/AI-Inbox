@@ -31,6 +31,7 @@ export function SuggestedActionButton({ action: initialAction }: { action: AIAct
     return "idle";
   });
   const [message, setMessage] = useState<string | null>(null);
+  const [resultTitle, setResultTitle] = useState<string | null>(null);
   const [completedAt, setCompletedAt] = useState<Date | null>(null);
   const definition = actionRegistry[action.type];
   const Icon = actionIcons[definition.icon];
@@ -49,6 +50,7 @@ export function SuggestedActionButton({ action: initialAction }: { action: AIAct
     try {
       const result = await executeAction(action);
       setAction({ ...result.action, status: result.success ? "completed" : "failed" });
+      setResultTitle(result.title ?? null);
       setMessage(result.message);
       setCompletedAt(result.success ? new Date() : null);
       setState(result.success ? "completed" : "failed");
@@ -61,6 +63,7 @@ export function SuggestedActionButton({ action: initialAction }: { action: AIAct
     } catch {
       const errorMessage = "Action could not be completed";
       setAction((currentAction) => ({ ...currentAction, status: "failed" }));
+      setResultTitle(null);
       setMessage(errorMessage);
       setCompletedAt(null);
       setState("failed");
@@ -75,6 +78,7 @@ export function SuggestedActionButton({ action: initialAction }: { action: AIAct
         completedAt={completedAt}
         message={message ?? (state === "completed" ? "Action completed" : "Action could not be completed")}
         onRetry={state === "failed" ? requestConfirmation : undefined}
+        resultTitle={resultTitle}
         status={state}
       />
     );

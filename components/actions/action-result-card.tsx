@@ -6,12 +6,13 @@ import { cn } from "@/lib/utils";
 type ActionResultCardProps = {
   status: "completed" | "failed";
   actionTitle: string;
+  resultTitle?: string | null;
   message: string;
   completedAt?: Date | null;
   onRetry?: () => void;
 };
 
-export function ActionResultCard({ status, actionTitle, message, completedAt, onRetry }: ActionResultCardProps) {
+export function ActionResultCard({ status, actionTitle, resultTitle, message, completedAt, onRetry }: ActionResultCardProps) {
   const completed = status === "completed";
   const Icon = completed ? CircleCheckBig : CircleX;
 
@@ -28,8 +29,9 @@ export function ActionResultCard({ status, actionTitle, message, completedAt, on
           <Icon className="size-5" strokeWidth={2} aria-hidden="true" />
         </span>
         <div className="min-w-0 flex-1">
-          <p className={cn("font-semibold", completed ? "text-green-800" : "text-red-800")}>{message}</p>
+          <p className={cn("font-semibold", completed ? "text-green-800" : "text-red-800")}>{resultTitle ?? message}</p>
           <p className="mt-1 text-sm font-medium text-slate-700">{actionTitle}</p>
+          {resultTitle ? <p className="mt-1 text-sm text-slate-600">{message}</p> : null}
           {completed && completedAt ? (
             <time className="mt-2 block text-xs text-green-700" dateTime={completedAt.toISOString()} title={completedAt.toLocaleString()}>
               Completed just now
