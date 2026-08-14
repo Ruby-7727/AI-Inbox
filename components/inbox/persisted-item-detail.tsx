@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, Image as ImageIcon } from "lucide-react";
 
 import { ConfidenceBadge } from "@/components/cards/confidence-badge";
+import { ActionHistory } from "@/components/actions/action-history";
 import { SuggestedActionButton } from "@/components/actions/suggested-action-button";
 import { mapSuggestedActions } from "@/lib/actions/mapper";
 import { getInboxItemById } from "@/lib/supabase/inboxItems";
@@ -49,6 +50,7 @@ export function PersistedItemDetail({ id }: { id: string }) {
           {suggestedActions.length ? suggestedActions.map((action) => <SuggestedActionButton key={action.id} action={action} />) : <p className="text-sm text-muted-foreground">No grounded actions suggested.</p>}
         </div>
         <p className="mt-5 text-sm text-muted-foreground">Suggestions only — AI Inbox has not executed any external action.</p>
+        <ActionHistory />
       </section>
       <section className="mt-6 flex items-center gap-4 rounded-xl border bg-white px-7 py-5 shadow-card"><ImageIcon className="size-6" /><div><p className="font-medium">Original screenshot stored</p><p className="mt-1 text-sm text-muted-foreground">Private path: {item.image_path}</p></div></section>
     </div>

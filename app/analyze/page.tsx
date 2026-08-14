@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, Check, Circle, Sparkles } from "lucide-react";
 
 import { SuggestedActionButton } from "@/components/actions/suggested-action-button";
+import { ActionHistory } from "@/components/actions/action-history";
 import { mapSuggestedActions } from "@/lib/actions/mapper";
 import type { AnalyzeApiResponse } from "@/types/analysis";
 
@@ -82,6 +83,7 @@ function AnalysisResultCard({ analysis }: { analysis: AnalyzeApiResponse | null 
           {suggestedActions.length ? suggestedActions.map((action) => <SuggestedActionButton key={action.id} action={action} />) : <p className="text-sm text-muted-foreground">No grounded actions suggested.</p>}
         </div>
         <p className="mt-5 text-sm text-muted-foreground">Suggestions only — AI Inbox has not executed any external action.</p>
+        <ActionHistory />
       </section>
     </div>
   );

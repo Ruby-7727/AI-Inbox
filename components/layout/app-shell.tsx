@@ -1,5 +1,6 @@
 import { Brand } from "@/components/layout/brand";
 import { Sidebar } from "@/components/layout/sidebar";
+import { ActionProvider } from "@/components/actions/action-provider";
 import { UploadProvider } from "@/components/actions/upload-provider";
 import { AnonymousAuthProvider } from "@/components/auth/anonymous-auth-provider";
 
@@ -7,6 +8,7 @@ export function AppShell({ children }: Readonly<{ children: React.ReactNode }>) 
   return (
     <AnonymousAuthProvider>
     <UploadProvider>
+    <ActionProvider>
       <div className="min-h-screen md:grid md:grid-cols-[var(--sidebar-width)_minmax(0,1fr)]">
         <Sidebar />
         <div className="min-w-0">
@@ -18,6 +20,7 @@ export function AppShell({ children }: Readonly<{ children: React.ReactNode }>) 
           </main>
         </div>
       </div>
+    </ActionProvider>
     </UploadProvider>
     </AnonymousAuthProvider>
   );
