@@ -32,6 +32,18 @@ export type InboxItemInsert = Omit<InboxItemRow, "created_at" | "updated_at" | "
 
 export type InboxItemUpdate = Partial<Omit<InboxItemInsert, "id" | "user_id">>;
 
+export type SavedItemRow = {
+  id: string;
+  user_id: string;
+  inbox_item_id: string;
+  created_at: string;
+};
+
+export type SavedItemInsert = Omit<SavedItemRow, "id" | "created_at"> & {
+  id?: string;
+  created_at?: string;
+};
+
 export type Database = {
   public: {
     Tables: {
@@ -39,6 +51,12 @@ export type Database = {
         Row: InboxItemRow;
         Insert: InboxItemInsert;
         Update: InboxItemUpdate;
+        Relationships: [];
+      };
+      saved_items: {
+        Row: SavedItemRow;
+        Insert: SavedItemInsert;
+        Update: never;
         Relationships: [];
       };
     };

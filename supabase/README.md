@@ -17,3 +17,7 @@ AI Inbox uses the browser Supabase client with an invisible anonymous user sessi
 5. Restart the local Next.js development server after changing `.env.local`.
 
 The migration enables RLS on `inbox_items` and limits database rows and Storage objects to `auth.uid()`. Screenshot objects use `{user_id}/{item_id}.{extension}` paths.
+
+## Phase 5.1 saved items
+
+After the Phase 4 setup, run `migrations/202608140001_saved_items.sql` once in the SQL Editor. It creates the RLS-protected `saved_items` table used by the Inbox Save button and Saved page.

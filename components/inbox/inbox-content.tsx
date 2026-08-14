@@ -7,16 +7,22 @@ import { ActionCard } from "@/components/cards/action-card";
 import { EmptyState } from "@/components/inbox/empty-state";
 import { getInboxItems } from "@/lib/supabase/inboxItems";
 import { inboxRowToCard } from "@/lib/supabase/presenters";
+import { getSavedItems } from "@/lib/supabase/savedItems";
 import type { InboxItemRow } from "@/types/database";
 
 export function InboxContent() {
   const [items, setItems] = useState<InboxItemRow[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [savedItemIds, setSavedItemIds] = useState<Record<string, string>>({});
 
   useEffect(() => {
     let active = true;
-    void getInboxItems()
-      .then((data) => { if (active) setItems(data); })
+    void Promise.all([getInboxItems(), getSavedItems()])
+      .then(([inboxData, savedData]) => {
+        if (!active) return;
+        setItems(inboxData);
+        setSavedItemIds(Object.fromEntries(savedData.map(({ savedItem }) => [savedItem.inbox_item_id, savedItem.id])));
+      })
       .catch((loadError) => {
         if (!active) return;
         setError(loadError instanceof Error ? loadError.message : "Inbox could not be loaded.");
@@ -34,7 +40,7 @@ export function InboxContent() {
     <section className="mt-9">
       <h2 className="text-xl font-semibold">Recent items</h2>
       <div className="mt-4 space-y-3">
-        {items.map((item) => <ActionCard key={item.id} item={inboxRowToCard(item)} />)}
+        {items.map((item) => <ActionCard key={item.id} item={inboxRowToCard(item)} savedItemId={savedItemIds[item.id]} />)}
       </div>
     </section>
   );

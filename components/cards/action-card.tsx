@@ -2,10 +2,11 @@ import Link from "next/link";
 import { CalendarDays, MapPin } from "lucide-react";
 
 import { ActionButton } from "@/components/actions/action-button";
+import { SaveButton } from "@/components/actions/save-button";
 import { IntentBadge } from "@/components/cards/intent-badge";
 import type { InboxItem } from "@/types";
 
-export function ActionCard({ item }: { item: InboxItem }) {
+export function ActionCard({ item, savedItemId }: { item: InboxItem; savedItemId?: string }) {
   return (
     <article className="flex min-h-34 items-center gap-7 rounded-xl border bg-white px-6 py-5 shadow-card">
       <IntentBadge intent={item.intent} compact />
@@ -26,7 +27,9 @@ export function ActionCard({ item }: { item: InboxItem }) {
         ) : null}
       </div>
       <div className="hidden items-center gap-3 xl:flex">
-        {item.actions.map((action) => <ActionButton key={action.label} {...action} />)}
+        {item.actions.map((action) => action.label === "Save"
+          ? <SaveButton key={action.label} inboxItemId={item.id} initialSavedItemId={savedItemId} />
+          : <ActionButton key={action.label} {...action} />)}
       </div>
     </article>
   );
