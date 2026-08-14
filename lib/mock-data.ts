@@ -24,9 +24,9 @@ export const inboxItems: InboxItem[] = [
     detail: "Shenzhen Bay Sports Center",
     isNew: true,
     actions: [
-      { label: "Add Calendar", icon: CalendarDays, primary: true },
-      { label: "Remind Me", icon: Bell },
-      { label: "Open Map", icon: Map },
+      { label: "Add Calendar", icon: CalendarDays, primary: true, actionType: "calendar" },
+      { label: "Remind Me", icon: Bell, actionType: "reminder" },
+      { label: "Open Map", icon: Map, actionType: "map" },
     ],
   },
   {
@@ -37,8 +37,8 @@ export const inboxItems: InboxItem[] = [
     detail: "Wireless noise-canceling headphones, latest model.",
     actions: [
       { label: "Save", icon: Bookmark },
-      { label: "Compare", icon: ChartNoAxesColumnIncreasing },
-      { label: "Research", icon: Search },
+      { label: "Compare", icon: ChartNoAxesColumnIncreasing, actionType: "compare" },
+      { label: "Research", icon: Search, actionType: "research" },
     ],
   },
   {
@@ -49,7 +49,7 @@ export const inboxItems: InboxItem[] = [
     detail: "Recommended: Shoyu Ramen",
     actions: [
       { label: "Want to Go", icon: Heart },
-      { label: "Navigate", icon: Navigation },
+      { label: "Navigate", icon: Navigation, actionType: "map" },
       { label: "Add to Plan", icon: ListPlus },
     ],
   },
@@ -60,8 +60,8 @@ export const inboxItems: InboxItem[] = [
     meta: "Tomorrow  ·  Due 18:00",
     actions: [
       { label: "Create Task", icon: SquareCheckBig, primary: true },
-      { label: "Remind Me", icon: Bell },
-      { label: "Schedule", icon: CalendarDays },
+      { label: "Remind Me", icon: Bell, actionType: "reminder" },
+      { label: "Schedule", icon: CalendarDays, actionType: "calendar" },
     ],
   },
   {

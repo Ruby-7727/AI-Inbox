@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, Image as ImageIcon } from "lucide-react";
 
 import { ConfidenceBadge } from "@/components/cards/confidence-badge";
+import { SuggestedActionButton } from "@/components/actions/suggested-action-button";
+import { mapSuggestedActions } from "@/lib/actions/mapper";
 import { getInboxItemById } from "@/lib/supabase/inboxItems";
 import type { InboxItemRow } from "@/types/database";
 
@@ -24,6 +26,8 @@ export function PersistedItemDetail({ id }: { id: string }) {
   if (item === undefined) return <div className="h-96 animate-pulse rounded-xl border bg-white/60" aria-label="Loading item" />;
   if (item === null) return <DetailMessage title="Item not found" detail="This item does not exist or belongs to another user." />;
 
+  const suggestedActions = mapSuggestedActions(item.intent, item.structured_data.actions ?? []);
+
   return (
     <div>
       <Link className="inline-flex items-center gap-3 text-slate-600 hover:text-primary" href="/inbox"><ArrowLeft className="size-5" />Back to Inbox</Link>
@@ -42,7 +46,7 @@ export function PersistedItemDetail({ id }: { id: string }) {
         </div>
         <h2 className="mt-7 text-lg font-semibold">Suggested actions</h2>
         <div className="mt-4 flex flex-wrap gap-3">
-          {item.structured_data.actions?.length ? item.structured_data.actions.map((action) => <span className="rounded-lg border px-5 py-3 text-sm font-medium capitalize text-slate-700" key={action}>{action.replaceAll("_", " ")}</span>) : <p className="text-sm text-muted-foreground">No grounded actions suggested.</p>}
+          {suggestedActions.length ? suggestedActions.map((action) => <SuggestedActionButton key={action.id} action={action} />) : <p className="text-sm text-muted-foreground">No grounded actions suggested.</p>}
         </div>
         <p className="mt-5 text-sm text-muted-foreground">Suggestions only — AI Inbox has not executed any external action.</p>
       </section>

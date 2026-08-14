@@ -4,7 +4,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowLeft, Check, Circle, Sparkles } from "lucide-react";
 
-import type { AnalyzeApiResponse, AnalysisAction } from "@/types/analysis";
+import { SuggestedActionButton } from "@/components/actions/suggested-action-button";
+import { mapSuggestedActions } from "@/lib/actions/mapper";
+import type { AnalyzeApiResponse } from "@/types/analysis";
 
 export default function AnalyzePage() {
   const [analysis, setAnalysis] = useState<AnalyzeApiResponse | null>(null);
@@ -58,6 +60,7 @@ function AnalysisResultCard({ analysis }: { analysis: AnalyzeApiResponse | null 
   }
 
   const { result } = analysis;
+  const suggestedActions = mapSuggestedActions(result.intent, result.actions);
   return (
     <div className="py-2">
       <Link className="inline-flex items-center gap-2 text-slate-600 hover:text-primary" href="/inbox"><ArrowLeft className="size-5" />Back to Inbox</Link>
@@ -76,16 +79,12 @@ function AnalysisResultCard({ analysis }: { analysis: AnalyzeApiResponse | null 
 
         <h2 className="mt-8 text-lg font-semibold">Suggested actions</h2>
         <div className="mt-4 flex flex-wrap gap-3">
-          {result.actions.length ? result.actions.map((action) => <button key={action} className="rounded-lg border bg-white px-5 py-3 text-sm font-medium text-slate-700 hover:border-primary hover:text-primary" type="button">{actionLabel(action)}</button>) : <p className="text-sm text-muted-foreground">No grounded actions suggested.</p>}
+          {suggestedActions.length ? suggestedActions.map((action) => <SuggestedActionButton key={action.id} action={action} />) : <p className="text-sm text-muted-foreground">No grounded actions suggested.</p>}
         </div>
         <p className="mt-5 text-sm text-muted-foreground">Suggestions only — AI Inbox has not executed any external action.</p>
       </section>
     </div>
   );
-}
-
-function actionLabel(action: AnalysisAction) {
-  return action.split("_").map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(" ");
 }
 
 function ProcessStep({ label, detail, done, active, last }: { label: string; detail?: string; done?: boolean; active?: boolean; last?: boolean }) {

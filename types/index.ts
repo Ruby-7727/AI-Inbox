@@ -1,4 +1,5 @@
 import type { LucideIcon } from "lucide-react";
+import type { ActionType } from "@/lib/actions/types";
 
 export type InboxItemKind = "event" | "product" | "place" | "task" | "knowledge";
 
@@ -10,6 +11,7 @@ export type ItemAction = {
   label: string;
   icon: LucideIcon;
   primary?: boolean;
+  actionType?: ActionType;
 };
 
 export type InboxItem = {
