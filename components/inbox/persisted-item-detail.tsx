@@ -30,6 +30,9 @@ export function PersistedItemDetail({ id }: { id: string }) {
   const suggestedActions = mapSuggestedActions(item.intent, item.structured_data.actions ?? [], {
     fields: item.structured_data.fields,
     locationFallback: item.title,
+    itemTitle: item.title,
+    itemDescription: item.summary,
+    inboxItemId: item.id,
   });
 
   return (

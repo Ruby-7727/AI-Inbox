@@ -21,3 +21,15 @@ The migration enables RLS on `inbox_items` and limits database rows and Storage 
 ## Phase 5.1 saved items
 
 After the Phase 4 setup, run `migrations/202608140001_saved_items.sql` once in the SQL Editor. It creates the RLS-protected `saved_items` table used by the Inbox Save button and Saved page.
+
+## Phase 5.3.2 reminders
+
+Run `migrations/202608140002_create_reminders.sql` once in the SQL Editor after the Phase 4 migration. It creates `public.reminders` with:
+
+- an optional link to the originating `inbox_items` row;
+- a required reminder title and `remind_at` timestamp;
+- `pending` and `completed` statuses;
+- indexes for user, due-time, and user/status queries;
+- RLS policies allowing authenticated users to select, insert, update, and delete only rows whose `user_id` matches `auth.uid()`.
+
+This migration only creates the persistence foundation. It does not add reminder UI, action execution, notifications, or an API route. The migration must be applied manually in the Supabase SQL Editor before application code can use the table.

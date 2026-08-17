@@ -44,6 +44,29 @@ export type SavedItemInsert = Omit<SavedItemRow, "id" | "created_at"> & {
   created_at?: string;
 };
 
+export type ReminderStatus = "pending" | "completed";
+
+export type ReminderRow = {
+  id: string;
+  user_id: string;
+  inbox_item_id: string | null;
+  title: string;
+  description: string | null;
+  remind_at: string;
+  status: ReminderStatus;
+  created_at: string;
+};
+
+export type ReminderInsert = Omit<ReminderRow, "id" | "inbox_item_id" | "description" | "status" | "created_at"> & {
+  id?: string;
+  inbox_item_id?: string | null;
+  description?: string | null;
+  status?: ReminderStatus;
+  created_at?: string;
+};
+
+export type ReminderUpdate = Partial<Omit<ReminderRow, "id" | "user_id" | "created_at">>;
+
 export type Database = {
   public: {
     Tables: {
@@ -57,6 +80,12 @@ export type Database = {
         Row: SavedItemRow;
         Insert: SavedItemInsert;
         Update: never;
+        Relationships: [];
+      };
+      reminders: {
+        Row: ReminderRow;
+        Insert: ReminderInsert;
+        Update: ReminderUpdate;
         Relationships: [];
       };
     };

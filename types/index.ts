@@ -13,6 +13,11 @@ export type ItemAction = {
   primary?: boolean;
   actionType?: ActionType;
   location?: string | null;
+  reminderTitle?: string | null;
+  reminderDescription?: string | null;
+  reminderDate?: string | null;
+  remindAt?: string | null;
+  inboxItemId?: string | null;
 };
 
 export type InboxItem = {

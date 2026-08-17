@@ -7,8 +7,10 @@ import { Bell, CalendarDays, ChartNoAxesColumnIncreasing, LoaderCircle, MapPin, 
 import { ActionConfirmDialog } from "@/components/actions/action-confirm-dialog";
 import { useActionHistory } from "@/components/actions/action-provider";
 import { ActionResultCard } from "@/components/actions/action-result-card";
+import { ReminderTimeDialog } from "@/components/actions/reminder-time-dialog";
 import { Button } from "@/components/ui/button";
 import { executeAction } from "@/lib/actions/executor";
+import { combineReminderDateAndTime, needsReminderTime } from "@/lib/actions/reminder-time";
 import { actionRegistry, type ActionIconIdentifier } from "@/lib/actions/registry";
 import type { AIAction } from "@/lib/actions/types";
 
@@ -45,10 +47,10 @@ export function SuggestedActionButton({ action: initialAction }: { action: AIAct
     setState(action.status === "failed" ? "failed" : "idle");
   }
 
-  async function confirmAction() {
+  async function executeConfirmedAction(actionToExecute: AIAction) {
     setState("executing");
     try {
-      const result = await executeAction(action);
+      const result = await executeAction(actionToExecute);
       setAction({ ...result.action, status: result.success ? "completed" : "failed" });
       setResultTitle(result.title ?? null);
       setMessage(result.message);
@@ -62,13 +64,25 @@ export function SuggestedActionButton({ action: initialAction }: { action: AIAct
       });
     } catch {
       const errorMessage = "Action could not be completed";
-      setAction((currentAction) => ({ ...currentAction, status: "failed" }));
+      setAction({ ...actionToExecute, status: "failed" });
       setResultTitle(null);
       setMessage(errorMessage);
       setCompletedAt(null);
       setState("failed");
-      addAction({ title: action.title, type: action.type, status: "failed", message: errorMessage });
+      addAction({ title: actionToExecute.title, type: actionToExecute.type, status: "failed", message: errorMessage });
     }
+  }
+
+  function confirmAction() {
+    void executeConfirmedAction(action);
+  }
+
+  function confirmReminderTime(time: string) {
+    const remindAt = action.reminderDate ? combineReminderDateAndTime(action.reminderDate, time) : null;
+    if (!remindAt) return;
+    const completedAction = { ...action, remindAt };
+    setAction(completedAction);
+    void executeConfirmedAction(completedAction);
   }
 
   if (state === "completed" || state === "failed") {
@@ -101,7 +115,13 @@ export function SuggestedActionButton({ action: initialAction }: { action: AIAct
         action={action}
         onCancel={cancelConfirmation}
         onConfirm={confirmAction}
-        open={state === "confirming"}
+        open={state === "confirming" && !needsReminderTime(action)}
+      />
+      <ReminderTimeDialog
+        date={action.reminderDate ?? ""}
+        onCancel={cancelConfirmation}
+        onConfirm={confirmReminderTime}
+        open={state === "confirming" && needsReminderTime(action)}
       />
     </>
   );

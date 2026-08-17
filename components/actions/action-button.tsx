@@ -18,8 +18,17 @@ const actionIcons: Record<ActionIconIdentifier, LucideIcon> = {
   chart: ChartNoAxesColumnIncreasing,
 };
 
-export function ActionButton({ label, icon: FallbackIcon, primary, className, actionType, location }: { label: string; icon: LucideIcon; primary?: boolean; className?: string; actionType?: ActionType; location?: string | null }) {
-  const [action, setAction] = useState<AIAction | null>(() => actionType ? { ...createAction(actionType), title: label, location } : null);
+export function ActionButton({ label, icon: FallbackIcon, primary, className, actionType, location, reminderTitle, reminderDescription, reminderDate, remindAt, inboxItemId }: { label: string; icon: LucideIcon; primary?: boolean; className?: string; actionType?: ActionType; location?: string | null; reminderTitle?: string | null; reminderDescription?: string | null; reminderDate?: string | null; remindAt?: string | null; inboxItemId?: string | null }) {
+  const [action, setAction] = useState<AIAction | null>(() => actionType ? {
+    ...createAction(actionType),
+    title: label,
+    location,
+    reminderTitle,
+    reminderDescription,
+    reminderDate,
+    remindAt,
+    inboxItemId,
+  } : null);
   const [executing, setExecuting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 

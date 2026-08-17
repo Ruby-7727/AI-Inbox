@@ -64,6 +64,9 @@ function AnalysisResultCard({ analysis }: { analysis: AnalyzeApiResponse | null 
   const suggestedActions = mapSuggestedActions(result.intent, result.actions, {
     fields: result.fields,
     locationFallback: result.title,
+    itemTitle: result.title,
+    itemDescription: result.summary,
+    inboxItemId: analysis.id,
   });
   return (
     <div className="py-2">

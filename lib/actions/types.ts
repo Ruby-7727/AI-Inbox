@@ -10,6 +10,11 @@ export interface AIAction {
   description: string;
   status: ActionStatus;
   location?: string | null;
+  reminderTitle?: string | null;
+  reminderDescription?: string | null;
+  reminderDate?: string | null;
+  remindAt?: string | null;
+  inboxItemId?: string | null;
 }
 
 export type ActionExecutionResult = {

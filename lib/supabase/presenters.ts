@@ -20,11 +20,19 @@ export function inboxRowToCard(item: InboxItemRow): InboxItem {
   const frameworkActions: InboxItem["actions"] = mapSuggestedActions(item.intent, suggestions, {
     fields: item.structured_data.fields,
     locationFallback: item.title,
+    itemTitle: item.title,
+    itemDescription: item.summary,
+    inboxItemId: item.id,
   }).map((action) => ({
     label: action.title,
     icon: actionIcons[action.type],
     actionType: action.type,
     location: action.location,
+    reminderTitle: action.reminderTitle,
+    reminderDescription: action.reminderDescription,
+    reminderDate: action.reminderDate,
+    remindAt: action.remindAt,
+    inboxItemId: action.inboxItemId,
     primary: action.type === "calendar",
   }));
   const supportsPersistentSave = (item.intent === "shop" || item.intent === "remember") && suggestions.includes("save");
