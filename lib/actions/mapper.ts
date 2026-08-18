@@ -57,6 +57,8 @@ export function mapSuggestedActions(
         ...(title ? { title } : {}),
       },
       context,
+      intent,
+      suggestions,
     ));
   }
 
@@ -64,10 +66,15 @@ export function mapSuggestedActions(
     .map(resolveActionType)
     .filter((type): type is ActionType => Boolean(type));
 
-  return [...new Set(actionTypes)].map((type) => withActionContext(createAction(type), context));
+  return [...new Set(actionTypes)].map((type) => withActionContext(createAction(type), context, intent, suggestions));
 }
 
-function withActionContext(action: AIAction, context: ActionMappingContext): AIAction {
+function withActionContext(
+  action: AIAction,
+  context: ActionMappingContext,
+  intent: AnalysisIntent,
+  suggestions: readonly AnalysisAction[],
+): AIAction {
   if (action.type === "map") {
     return { ...action, location: findLocation(context.fields) ?? cleanValue(context.locationFallback) };
   }
@@ -94,6 +101,19 @@ function withActionContext(action: AIAction, context: ActionMappingContext): AIA
       isAllDay: timing.isAllDay,
       location: findLocation(context.fields),
       description: cleanValue(context.itemDescription) ?? "",
+      inboxItemId: cleanValue(context.inboxItemId),
+    };
+  }
+  if (action.type === "research") {
+    return {
+      ...action,
+      researchType: intent === "go" ? "trip" : intent === "shop" ? "product" : "general",
+      sourceTitle: cleanValue(context.itemTitle),
+      sourceSummary: cleanValue(context.itemDescription),
+      structuredData: {
+        fields: [...(context.fields ?? [])],
+        actions: [...suggestions],
+      },
       inboxItemId: cleanValue(context.inboxItemId),
     };
   }

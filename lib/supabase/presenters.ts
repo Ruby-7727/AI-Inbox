@@ -38,6 +38,10 @@ export function inboxRowToCard(item: InboxItemRow): InboxItem {
     startAt: action.startAt,
     endAt: action.endAt,
     isAllDay: action.isAllDay,
+    researchType: action.researchType,
+    sourceTitle: action.sourceTitle,
+    sourceSummary: action.sourceSummary,
+    structuredData: action.structuredData,
     inboxItemId: action.inboxItemId,
     primary: action.type === "calendar",
   }));

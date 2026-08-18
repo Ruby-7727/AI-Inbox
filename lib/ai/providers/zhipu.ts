@@ -26,6 +26,29 @@ type ZhipuChatResponse = {
 };
 
 export async function analyzeScreenshotWithZhipu(imageUrl: string): Promise<string> {
+  return requestZhipuFinalContent([
+    { role: "system", content: SCREENSHOT_ANALYSIS_SYSTEM_PROMPT },
+    {
+      role: "user",
+      content: [
+        { type: "image_url", image_url: { url: imageUrl } },
+        {
+          type: "text",
+          text: "Analyze this screenshot as the Screenshot Intent & Action Extraction Engine. Return only the final JSON object; do not include reasoning, markdown, or explanatory text.",
+        },
+      ],
+    },
+  ], 1200);
+}
+
+export function researchWithZhipu(systemPrompt: string, userPrompt: string) {
+  return requestZhipuFinalContent([
+    { role: "system", content: systemPrompt },
+    { role: "user", content: userPrompt },
+  ], 1600);
+}
+
+async function requestZhipuFinalContent(messages: Array<{ role: "system" | "user"; content: unknown }>, maxTokens: number) {
   const apiKey = process.env.ZHIPU_API_KEY;
   if (!apiKey) throw new ZhipuConfigurationError("ZHIPU_API_KEY is not configured.");
 
@@ -45,23 +68,11 @@ export async function analyzeScreenshotWithZhipu(imageUrl: string): Promise<stri
       },
       body: JSON.stringify({
         model: process.env.ZHIPU_VISION_MODEL ?? DEFAULT_MODEL,
-        messages: [
-          { role: "system", content: SCREENSHOT_ANALYSIS_SYSTEM_PROMPT },
-          {
-            role: "user",
-            content: [
-              { type: "image_url", image_url: { url: imageUrl } },
-              {
-                type: "text",
-                text: "Analyze this screenshot as the Screenshot Intent & Action Extraction Engine. Return only the final JSON object; do not include reasoning, markdown, or explanatory text.",
-              },
-            ],
-          },
-        ],
+        messages,
         thinking: { type: "disabled" },
         response_format: { type: "json_object" },
         stream: false,
-        max_tokens: 1200,
+        max_tokens: maxTokens,
         temperature: 0.1,
       }),
       cache: "no-store",

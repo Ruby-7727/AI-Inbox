@@ -14,6 +14,7 @@ import { executeAction } from "@/lib/actions/executor";
 import { combineReminderDateAndTime, needsReminderTime } from "@/lib/actions/reminder-time";
 import { actionRegistry, type ActionIconIdentifier } from "@/lib/actions/registry";
 import type { AIAction } from "@/lib/actions/types";
+import type { ResearchResult } from "@/types/research";
 
 const actionIcons: Record<ActionIconIdentifier, LucideIcon> = {
   "calendar-days": CalendarDays,
@@ -36,6 +37,7 @@ export function SuggestedActionButton({ action: initialAction }: { action: AIAct
   const [message, setMessage] = useState<string | null>(null);
   const [resultTitle, setResultTitle] = useState<string | null>(null);
   const [completedAt, setCompletedAt] = useState<Date | null>(null);
+  const [researchResult, setResearchResult] = useState<ResearchResult | null>(null);
   const definition = actionRegistry[action.type];
   const Icon = actionIcons[definition.icon];
 
@@ -53,8 +55,9 @@ export function SuggestedActionButton({ action: initialAction }: { action: AIAct
     try {
       const result = await executeAction(actionToExecute);
       setAction({ ...result.action, status: result.success ? "completed" : "failed" });
-      setResultTitle(result.title ?? null);
+      setResultTitle(result.success ? result.title ?? null : actionToExecute.type === "research" ? "Research failed" : result.title ?? null);
       setMessage(result.message);
+      setResearchResult(result.success ? result.researchResult ?? null : null);
       setCompletedAt(result.success ? new Date() : null);
       setState(result.success ? "completed" : "failed");
       addAction({
@@ -64,10 +67,11 @@ export function SuggestedActionButton({ action: initialAction }: { action: AIAct
         message: result.message,
       });
     } catch {
-      const errorMessage = "Action could not be completed";
+      const errorMessage = actionToExecute.type === "research" ? "Unable to complete research." : "Action could not be completed";
       setAction({ ...actionToExecute, status: "failed" });
-      setResultTitle(null);
+      setResultTitle(actionToExecute.type === "research" ? "Research failed" : null);
       setMessage(errorMessage);
+      setResearchResult(null);
       setCompletedAt(null);
       setState("failed");
       addAction({ title: actionToExecute.title, type: actionToExecute.type, status: "failed", message: errorMessage });
@@ -97,10 +101,12 @@ export function SuggestedActionButton({ action: initialAction }: { action: AIAct
     return (
       <ActionResultCard
         actionTitle={action.title}
+        actionType={action.type}
         completedAt={completedAt}
         message={message ?? (state === "completed" ? "Action completed" : "Action could not be completed")}
         onRetry={state === "failed" ? requestConfirmation : undefined}
         resultTitle={resultTitle}
+        researchResult={researchResult}
         status={state}
       />
     );
@@ -117,7 +123,7 @@ export function SuggestedActionButton({ action: initialAction }: { action: AIAct
         type="button"
       >
         {state === "executing" ? <LoaderCircle className="size-4.5 animate-spin" aria-hidden="true" /> : <Icon className="size-4.5" strokeWidth={1.8} aria-hidden="true" />}
-        {state === "executing" ? "Working..." : action.title}
+        {state === "executing" ? action.type === "research" ? "Researching your screenshot..." : "Working..." : action.title}
       </Button>
       <ActionConfirmDialog
         action={action}

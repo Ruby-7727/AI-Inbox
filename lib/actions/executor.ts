@@ -1,7 +1,9 @@
 import type { AIAction, ActionExecutionResult } from "@/lib/actions/types";
 import { buildCalendarIcs, calendarFilename, downloadCalendarIcs } from "@/lib/actions/calendar-ics";
+import { requestResearch } from "@/lib/actions/research-request";
 import { isReminderDatePast } from "@/lib/actions/reminder-time";
 import { requestReminder, type ReminderRequestInput } from "@/lib/supabase/reminders";
+import type { ResearchRequestInput, ResearchResult } from "@/types/research";
 
 const completionMessages: Record<AIAction["type"], string> = {
   calendar: "Calendar event created",
@@ -14,6 +16,7 @@ const completionMessages: Record<AIAction["type"], string> = {
 type ActionExecutorDependencies = {
   createReminder?: (input: ReminderRequestInput) => Promise<unknown>;
   downloadCalendar?: (contents: string, filename: string) => void;
+  research?: (input: ResearchRequestInput) => Promise<ResearchResult>;
 };
 
 export async function executeAction(
@@ -23,12 +26,53 @@ export async function executeAction(
   if (action.type === "map") return executeMapAction(action);
   if (action.type === "reminder") return executeReminderAction(action, dependencies.createReminder ?? requestReminder);
   if (action.type === "calendar") return executeCalendarAction(action, dependencies.downloadCalendar ?? downloadCalendarIcs);
+  if (action.type === "research") return executeResearchAction(action, dependencies.research ?? requestResearch);
 
   await Promise.resolve();
   return {
     success: true,
     message: completionMessages[action.type],
     action: { ...action, status: "completed" },
+  };
+}
+
+async function executeResearchAction(
+  action: AIAction,
+  research: (input: ResearchRequestInput) => Promise<ResearchResult>,
+): Promise<ActionExecutionResult> {
+  const researchType = action.researchType;
+  const sourceTitle = action.sourceTitle?.trim();
+  const sourceSummary = action.sourceSummary?.trim();
+  const structuredData = action.structuredData;
+  const hasGroundedField = structuredData?.fields.some((field) => Boolean(field.value?.trim()));
+  if (!researchType || !sourceTitle || !structuredData || (!sourceSummary && !hasGroundedField)) {
+    return researchFailure(action);
+  }
+
+  try {
+    const researchResult = await research({
+      researchType,
+      sourceTitle,
+      sourceSummary,
+      structuredData,
+    });
+    return {
+      success: true,
+      title: "Research complete",
+      message: researchResult.overview,
+      researchResult,
+      action: { ...action, status: "completed" },
+    };
+  } catch {
+    return researchFailure(action);
+  }
+}
+
+function researchFailure(action: AIAction): ActionExecutionResult {
+  return {
+    success: false,
+    message: "Unable to complete research.",
+    action: { ...action, status: "failed" },
   };
 }
 

@@ -9,6 +9,7 @@ import { executeAction } from "@/lib/actions/executor";
 import { actionRegistry, createAction, type ActionIconIdentifier } from "@/lib/actions/registry";
 import type { AIAction, ActionType } from "@/lib/actions/types";
 import { cn } from "@/lib/utils";
+import type { ResearchStructuredData, ResearchType } from "@/types/research";
 
 const actionIcons: Record<ActionIconIdentifier, LucideIcon> = {
   "calendar-days": CalendarDays,
@@ -18,7 +19,7 @@ const actionIcons: Record<ActionIconIdentifier, LucideIcon> = {
   chart: ChartNoAxesColumnIncreasing,
 };
 
-export function ActionButton({ label, icon: FallbackIcon, primary, className, actionType, location, reminderTitle, reminderDescription, reminderDate, remindAt, eventTitle, eventDate, endDate, startAt, endAt, isAllDay, inboxItemId }: { label: string; icon: LucideIcon; primary?: boolean; className?: string; actionType?: ActionType; location?: string | null; reminderTitle?: string | null; reminderDescription?: string | null; reminderDate?: string | null; remindAt?: string | null; eventTitle?: string | null; eventDate?: string | null; endDate?: string | null; startAt?: string | null; endAt?: string | null; isAllDay?: boolean | null; inboxItemId?: string | null }) {
+export function ActionButton({ label, icon: FallbackIcon, primary, className, actionType, location, reminderTitle, reminderDescription, reminderDate, remindAt, eventTitle, eventDate, endDate, startAt, endAt, isAllDay, researchType, sourceTitle, sourceSummary, structuredData, inboxItemId }: { label: string; icon: LucideIcon; primary?: boolean; className?: string; actionType?: ActionType; location?: string | null; reminderTitle?: string | null; reminderDescription?: string | null; reminderDate?: string | null; remindAt?: string | null; eventTitle?: string | null; eventDate?: string | null; endDate?: string | null; startAt?: string | null; endAt?: string | null; isAllDay?: boolean | null; researchType?: ResearchType | null; sourceTitle?: string | null; sourceSummary?: string | null; structuredData?: ResearchStructuredData | null; inboxItemId?: string | null }) {
   const [action, setAction] = useState<AIAction | null>(() => actionType ? {
     ...createAction(actionType),
     title: label,
@@ -33,6 +34,10 @@ export function ActionButton({ label, icon: FallbackIcon, primary, className, ac
     startAt,
     endAt,
     isAllDay,
+    researchType,
+    sourceTitle,
+    sourceSummary,
+    structuredData,
     inboxItemId,
   } : null);
   const [executing, setExecuting] = useState(false);

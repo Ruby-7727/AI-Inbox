@@ -1,3 +1,5 @@
+import type { ResearchResult, ResearchStructuredData, ResearchType } from "@/types/research";
+
 export const ACTION_TYPES = ["calendar", "reminder", "map", "research", "compare"] as const;
 
 export type ActionType = (typeof ACTION_TYPES)[number];
@@ -20,6 +22,10 @@ export interface AIAction {
   startAt?: string | null;
   endAt?: string | null;
   isAllDay?: boolean | null;
+  researchType?: ResearchType | null;
+  sourceTitle?: string | null;
+  sourceSummary?: string | null;
+  structuredData?: ResearchStructuredData | null;
   inboxItemId?: string | null;
 }
 
@@ -28,4 +34,5 @@ export type ActionExecutionResult = {
   title?: string;
   message: string;
   action: AIAction;
+  researchResult?: ResearchResult;
 };
