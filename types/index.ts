@@ -17,6 +17,12 @@ export type ItemAction = {
   reminderDescription?: string | null;
   reminderDate?: string | null;
   remindAt?: string | null;
+  eventTitle?: string | null;
+  eventDate?: string | null;
+  endDate?: string | null;
+  startAt?: string | null;
+  endAt?: string | null;
+  isAllDay?: boolean | null;
   inboxItemId?: string | null;
 };
 

@@ -10,6 +10,8 @@
     "lint": "eslint .",
     "test:map-action": "tsx scripts/test-map-action.ts",
     "test:reminder-action": "tsx scripts/test-reminder-action.ts",
+    "test:calendar-action": "tsx scripts/test-calendar-action.ts",
+    "test:calendar-ics": "tsx scripts/test-calendar-ics.ts",
     "test:analysis-contract": "tsx scripts/test-analysis-contract.ts",
     "test:zhipu-provider": "node --conditions=react-server --import tsx scripts/test-zhipu-provider.ts",
     "test:ai": "node scripts/test-ai-analysis.mjs"

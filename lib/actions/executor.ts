@@ -1,4 +1,5 @@
 import type { AIAction, ActionExecutionResult } from "@/lib/actions/types";
+import { buildCalendarIcs, calendarFilename, downloadCalendarIcs } from "@/lib/actions/calendar-ics";
 import { isReminderDatePast } from "@/lib/actions/reminder-time";
 import { requestReminder, type ReminderRequestInput } from "@/lib/supabase/reminders";
 
@@ -12,6 +13,7 @@ const completionMessages: Record<AIAction["type"], string> = {
 
 type ActionExecutorDependencies = {
   createReminder?: (input: ReminderRequestInput) => Promise<unknown>;
+  downloadCalendar?: (contents: string, filename: string) => void;
 };
 
 export async function executeAction(
@@ -20,6 +22,7 @@ export async function executeAction(
 ): Promise<ActionExecutionResult> {
   if (action.type === "map") return executeMapAction(action);
   if (action.type === "reminder") return executeReminderAction(action, dependencies.createReminder ?? requestReminder);
+  if (action.type === "calendar") return executeCalendarAction(action, dependencies.downloadCalendar ?? downloadCalendarIcs);
 
   await Promise.resolve();
   return {
@@ -27,6 +30,96 @@ export async function executeAction(
     message: completionMessages[action.type],
     action: { ...action, status: "completed" },
   };
+}
+
+function executeCalendarAction(
+  action: AIAction,
+  downloadCalendar: (contents: string, filename: string) => void,
+): ActionExecutionResult {
+  const eventTitle = action.eventTitle?.trim();
+  if (!eventTitle) return calendarFailure(action, "Unable to create calendar event.");
+  if (action.isAllDay) return executeAllDayCalendarAction(action, eventTitle, downloadCalendar);
+  const startAt = action.startAt?.trim();
+  if (!startAt) {
+    if (!action.eventDate) return calendarFailure(action, "Calendar date could not be determined.");
+    if (isReminderDatePast(action.eventDate)) return calendarFailure(action, "This event time has already passed.");
+    return calendarFailure(action, "Calendar start time could not be determined.");
+  }
+
+  const startDate = new Date(startAt);
+  if (Number.isNaN(startDate.getTime())) return calendarFailure(action, "Calendar date could not be determined.");
+  if (startDate.getTime() <= Date.now()) return calendarFailure(action, "This event time has already passed.");
+
+  const endDate = action.endAt ? new Date(action.endAt) : null;
+  const validEndAt = endDate && !Number.isNaN(endDate.getTime()) && endDate.getTime() > startDate.getTime()
+    ? endDate.toISOString()
+    : undefined;
+
+  try {
+    const contents = buildCalendarIcs({
+      title: eventTitle,
+      startAt: startDate.toISOString(),
+      endAt: validEndAt,
+      description: action.description,
+      location: action.location,
+    });
+    downloadCalendar(contents, calendarFilename(eventTitle));
+    return {
+      success: true,
+      title: "Calendar event ready",
+      message: `${eventTitle} · ${formatLocalDateTime(startDate)}`,
+      action: { ...action, eventTitle, startAt: startDate.toISOString(), endAt: validEndAt, status: "completed" },
+    };
+  } catch {
+    return calendarFailure(action, "Unable to create calendar event.");
+  }
+}
+
+function executeAllDayCalendarAction(
+  action: AIAction,
+  eventTitle: string,
+  downloadCalendar: (contents: string, filename: string) => void,
+): ActionExecutionResult {
+  const eventDate = action.eventDate?.trim();
+  const endDate = action.endDate?.trim();
+  if (!eventDate) return calendarFailure(action, "Calendar date could not be determined.");
+  if (isReminderDatePast(endDate || eventDate)) return calendarFailure(action, "This event time has already passed.");
+
+  try {
+    const contents = buildCalendarIcs({
+      title: eventTitle,
+      eventDate,
+      endDate,
+      isAllDay: true,
+      description: action.description,
+      location: action.location,
+    });
+    downloadCalendar(contents, calendarFilename(eventTitle));
+    return {
+      success: true,
+      title: "Calendar event ready",
+      message: `${eventTitle} · ${formatAllDayRange(eventDate, endDate)}`,
+      action: { ...action, eventTitle, eventDate, endDate, isAllDay: true, status: "completed" },
+    };
+  } catch {
+    return calendarFailure(action, "Unable to create calendar event.");
+  }
+}
+
+function calendarFailure(action: AIAction, message: string): ActionExecutionResult {
+  return { success: false, message, action: { ...action, status: "failed" } };
+}
+
+function formatLocalDateTime(date: Date) {
+  return new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(date);
+}
+
+function formatAllDayRange(eventDate: string, endDate?: string) {
+  const format = (value: string) => new Intl.DateTimeFormat(undefined, {
+    dateStyle: "medium",
+    timeZone: "UTC",
+  }).format(new Date(`${value}T00:00:00.000Z`));
+  return endDate ? `${format(eventDate)} – ${format(endDate)}` : format(eventDate);
 }
 
 async function executeReminderAction(

@@ -32,6 +32,12 @@ export function inboxRowToCard(item: InboxItemRow): InboxItem {
     reminderDescription: action.reminderDescription,
     reminderDate: action.reminderDate,
     remindAt: action.remindAt,
+    eventTitle: action.eventTitle,
+    eventDate: action.eventDate,
+    endDate: action.endDate,
+    startAt: action.startAt,
+    endAt: action.endAt,
+    isAllDay: action.isAllDay,
     inboxItemId: action.inboxItemId,
     primary: action.type === "calendar",
   }));

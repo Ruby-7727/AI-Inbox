@@ -5,6 +5,7 @@ import type { LucideIcon } from "lucide-react";
 import { Bell, CalendarDays, ChartNoAxesColumnIncreasing, LoaderCircle, MapPin, Search } from "lucide-react";
 
 import { ActionConfirmDialog } from "@/components/actions/action-confirm-dialog";
+import { CalendarConfirmDialog } from "@/components/actions/calendar-confirm-dialog";
 import { useActionHistory } from "@/components/actions/action-provider";
 import { ActionResultCard } from "@/components/actions/action-result-card";
 import { ReminderTimeDialog } from "@/components/actions/reminder-time-dialog";
@@ -85,6 +86,13 @@ export function SuggestedActionButton({ action: initialAction }: { action: AIAct
     void executeConfirmedAction(completedAction);
   }
 
+  function confirmCalendar(time?: string) {
+    const startAt = time && action.eventDate ? combineReminderDateAndTime(action.eventDate, time) : action.startAt;
+    const completedAction = { ...action, startAt };
+    setAction(completedAction);
+    void executeConfirmedAction(completedAction);
+  }
+
   if (state === "completed" || state === "failed") {
     return (
       <ActionResultCard
@@ -115,7 +123,13 @@ export function SuggestedActionButton({ action: initialAction }: { action: AIAct
         action={action}
         onCancel={cancelConfirmation}
         onConfirm={confirmAction}
-        open={state === "confirming" && !needsReminderTime(action)}
+        open={state === "confirming" && action.type !== "calendar" && !needsReminderTime(action)}
+      />
+      <CalendarConfirmDialog
+        action={action}
+        onCancel={cancelConfirmation}
+        onConfirm={confirmCalendar}
+        open={state === "confirming" && action.type === "calendar"}
       />
       <ReminderTimeDialog
         date={action.reminderDate ?? ""}

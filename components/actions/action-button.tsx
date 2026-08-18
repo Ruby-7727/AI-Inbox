@@ -18,7 +18,7 @@ const actionIcons: Record<ActionIconIdentifier, LucideIcon> = {
   chart: ChartNoAxesColumnIncreasing,
 };
 
-export function ActionButton({ label, icon: FallbackIcon, primary, className, actionType, location, reminderTitle, reminderDescription, reminderDate, remindAt, inboxItemId }: { label: string; icon: LucideIcon; primary?: boolean; className?: string; actionType?: ActionType; location?: string | null; reminderTitle?: string | null; reminderDescription?: string | null; reminderDate?: string | null; remindAt?: string | null; inboxItemId?: string | null }) {
+export function ActionButton({ label, icon: FallbackIcon, primary, className, actionType, location, reminderTitle, reminderDescription, reminderDate, remindAt, eventTitle, eventDate, endDate, startAt, endAt, isAllDay, inboxItemId }: { label: string; icon: LucideIcon; primary?: boolean; className?: string; actionType?: ActionType; location?: string | null; reminderTitle?: string | null; reminderDescription?: string | null; reminderDate?: string | null; remindAt?: string | null; eventTitle?: string | null; eventDate?: string | null; endDate?: string | null; startAt?: string | null; endAt?: string | null; isAllDay?: boolean | null; inboxItemId?: string | null }) {
   const [action, setAction] = useState<AIAction | null>(() => actionType ? {
     ...createAction(actionType),
     title: label,
@@ -27,6 +27,12 @@ export function ActionButton({ label, icon: FallbackIcon, primary, className, ac
     reminderDescription,
     reminderDate,
     remindAt,
+    eventTitle,
+    eventDate,
+    endDate,
+    startAt,
+    endAt,
+    isAllDay,
     inboxItemId,
   } : null);
   const [executing, setExecuting] = useState(false);
