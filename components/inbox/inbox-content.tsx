@@ -5,6 +5,7 @@ import { AlertCircle, Inbox as InboxIcon } from "lucide-react";
 
 import { ActionCard } from "@/components/cards/action-card";
 import { EmptyState } from "@/components/inbox/empty-state";
+import { ensureDemoInboxItems } from "@/lib/supabase/demoItems";
 import { getInboxItems } from "@/lib/supabase/inboxItems";
 import { inboxRowToCard } from "@/lib/supabase/presenters";
 import { getSavedItems } from "@/lib/supabase/savedItems";
@@ -29,7 +30,7 @@ export function InboxContent() {
 
   useEffect(() => {
     let active = true;
-    void Promise.all([getInboxItems(), getSavedItems()])
+    void Promise.all([getInboxItems().then(ensureDemoInboxItems), getSavedItems()])
       .then(([inboxData, savedData]) => {
         if (!active) return;
         setItems(inboxData);

@@ -53,7 +53,7 @@ const failedResearch = renderToStaticMarkup(
     status="failed"
   />,
 );
-assert.match(failedResearch, /Research failed/);
+assert.match(failedResearch, /Action failed/);
 assert.match(failedResearch, /Unable to complete research\./);
 assert.match(failedResearch, /Retry/);
 

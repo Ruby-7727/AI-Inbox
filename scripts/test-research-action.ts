@@ -10,7 +10,7 @@ import type { ResearchRequestInput, ResearchResult } from "../types/research";
 const tripInput: ResearchRequestInput = {
   researchType: "trip",
   sourceTitle: "Barcelona itinerary",
-  sourceSummary: "Three-day itinerary with museum and restaurant stops.",
+  sourceSummary: "A recommended three-day itinerary with museum and restaurant stops.",
   structuredData: {
     fields: [
       { key: "day_1", label: "Day 1", value: "Gothic Quarter and museum" },

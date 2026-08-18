@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Check, Clipboard, FileImage, LoaderCircle, RefreshCw, Upload } from "lucide-react";
+import { Check, Circle, Clipboard, FileImage, LoaderCircle, RefreshCw, Upload } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -10,8 +10,9 @@ import type { AnalyzeApiResponse } from "@/types/analysis";
 
 const ACCEPTED_TYPES = ["image/png", "image/jpeg", "image/webp"];
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
+const analysisStages = ["Understanding content", "Detecting user intent", "Preparing actions"];
 
-export function ScreenshotUploader({ onCancel, onComplete }: { onCancel: () => void; onComplete: (result: AnalyzeApiResponse) => void }) {
+export function ScreenshotUploader({ onAnalysisFailed, onCancel, onComplete }: { onAnalysisFailed: () => void; onCancel: () => void; onComplete: (result: AnalyzeApiResponse) => void }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -19,6 +20,7 @@ export function ScreenshotUploader({ onCancel, onComplete }: { onCancel: () => v
   const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
+  const activeStage = progress === 100 ? analysisStages.length : progress < 35 ? 0 : progress < 70 ? 1 : 2;
 
   useEffect(() => {
     return () => {
@@ -71,21 +73,36 @@ export function ScreenshotUploader({ onCancel, onComplete }: { onCancel: () => v
       setProgress((current) => Math.min(current + Math.max(3, Math.round((90 - current) / 5)), 90));
     }, 140);
 
+    let analysisCompleted = false;
     try {
       const formData = new FormData();
       formData.append("screenshot", file);
       const response = await fetch("/api/analyze", { method: "POST", body: formData });
       const payload = (await response.json()) as AnalyzeApiResponse | { error?: string };
-      if (!response.ok) throw new Error("error" in payload && payload.error ? payload.error : "Upload failed. Please try again.");
+      if (!response.ok) {
+        window.clearInterval(progressTimer);
+        sessionStorage.removeItem("ai-inbox:analysis");
+        sessionStorage.setItem("ai-inbox:analysis-error", "true");
+        onAnalysisFailed();
+        return;
+      }
+      analysisCompleted = true;
       const analyzed = payload as AnalyzeApiResponse;
       const item = await createInboxItem(file, analyzed.result);
       const persistedPayload: AnalyzeApiResponse = { ...analyzed, id: item.id };
       window.clearInterval(progressTimer);
       setProgress(100);
+      sessionStorage.removeItem("ai-inbox:analysis-error");
       sessionStorage.setItem("ai-inbox:analysis", JSON.stringify(persistedPayload));
       window.setTimeout(() => onComplete(persistedPayload), 350);
     } catch (uploadError) {
       window.clearInterval(progressTimer);
+      if (!analysisCompleted) {
+        sessionStorage.removeItem("ai-inbox:analysis");
+        sessionStorage.setItem("ai-inbox:analysis-error", "true");
+        onAnalysisFailed();
+        return;
+      }
       setUploading(false);
       setProgress(0);
       setError(uploadError instanceof Error ? uploadError.message : "Upload failed. Please try again.");
@@ -128,9 +145,15 @@ export function ScreenshotUploader({ onCancel, onComplete }: { onCancel: () => v
             </div>
             {uploading ? (
               <div className="mt-5" aria-live="polite">
-                <div className="flex items-center justify-between text-sm"><span className="flex items-center gap-2 font-medium"><LoaderCircle className="size-4 animate-spin text-primary" />Uploading screenshot...</span><span className="text-muted-foreground">{progress}%</span></div>
+                <div className="flex items-center justify-between text-sm"><span className="flex items-center gap-2 font-medium"><LoaderCircle className="size-4 animate-spin text-primary" />Analyzing screenshot...</span><span className="text-muted-foreground">{progress}%</span></div>
                 <div className="mt-3 h-2 overflow-hidden rounded-full bg-blue-100"><div className="h-full rounded-full bg-primary transition-[width] duration-200" style={{ width: `${progress}%` }} /></div>
-                {progress === 100 ? <p className="mt-3 flex items-center gap-2 text-sm text-green-700"><Check className="size-4" />Upload complete. Preparing analysis...</p> : null}
+                <ol className="mt-4 grid gap-2 rounded-lg bg-slate-50 px-4 py-3">
+                  {analysisStages.map((stage, index) => {
+                    const done = index < activeStage;
+                    const active = index === activeStage;
+                    return <li className={active ? "flex items-center gap-2 text-sm font-medium text-slate-900" : "flex items-center gap-2 text-sm text-muted-foreground"} key={stage}>{done ? <Check className="size-4 text-green-600" /> : active ? <LoaderCircle className="size-4 animate-spin text-primary" /> : <Circle className="size-4" />}{stage}</li>;
+                  })}
+                </ol>
               </div>
             ) : null}
           </div>
@@ -143,7 +166,7 @@ export function ScreenshotUploader({ onCancel, onComplete }: { onCancel: () => v
 
       <div className="flex justify-end gap-3 border-t bg-slate-50/40 p-5">
         <Button variant="outline" onClick={onCancel} disabled={uploading} type="button">Cancel</Button>
-        {file ? <Button className="min-w-36" onClick={confirmUpload} disabled={uploading} type="button">{uploading ? <><LoaderCircle className="size-4 animate-spin" />Uploading</> : "Confirm Upload"}</Button> : null}
+        {file ? <Button className="min-w-36" onClick={confirmUpload} disabled={uploading} type="button">{uploading ? <><LoaderCircle className="size-4 animate-spin" />Analyzing</> : "Confirm Upload"}</Button> : null}
       </div>
     </>
   );

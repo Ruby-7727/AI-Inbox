@@ -8,8 +8,11 @@ import { ConfidenceBadge } from "@/components/cards/confidence-badge";
 import { ActionHistory } from "@/components/actions/action-history";
 import { SuggestedActionButton } from "@/components/actions/suggested-action-button";
 import { SaveButton } from "@/components/actions/save-button";
+import { ExplainabilitySection } from "@/components/analysis/explainability-section";
+import { LowConfidenceResult } from "@/components/analysis/low-confidence-result";
 import { mapSuggestedActions } from "@/lib/actions/mapper";
 import { isPlaceRecommendation } from "@/lib/actions/place-recommendation";
+import { LOW_CONFIDENCE_THRESHOLD } from "@/lib/analysis/uncertainty";
 import { getInboxItemById } from "@/lib/supabase/inboxItems";
 import type { InboxItemRow } from "@/types/database";
 
@@ -28,6 +31,9 @@ export function PersistedItemDetail({ id }: { id: string }) {
   if (error) return <DetailMessage title="We couldn't load this item." detail={error} />;
   if (item === undefined) return <div className="h-96 animate-pulse rounded-xl border bg-white/60" aria-label="Loading item" />;
   if (item === null) return <DetailMessage title="Item not found" detail="This item does not exist or belongs to another user." />;
+  if (Number(item.confidence ?? 0) < LOW_CONFIDENCE_THRESHOLD) {
+    return <div><Link className="inline-flex items-center gap-3 text-slate-600 hover:text-primary" href="/inbox"><ArrowLeft className="size-5" />Back to Inbox</Link><LowConfidenceResult inboxItemId={item.id} intent={item.intent} /></div>;
+  }
 
   const suggestedActions = mapSuggestedActions(item.intent, item.structured_data.actions ?? [], {
     fields: item.structured_data.fields,
@@ -59,17 +65,18 @@ export function PersistedItemDetail({ id }: { id: string }) {
             <div className="grid grid-cols-[180px_1fr] border-b px-5 py-4 last:border-b-0" key={field.key}><span className="text-sm text-muted-foreground">{field.label}</span><span className={field.value === null ? "text-slate-400" : "font-medium"}>{field.value ?? "Not found"}</span></div>
           )) : <p className="px-5 py-4 text-sm text-muted-foreground">No grounded fields were extracted.</p>}
         </div>
+        <ExplainabilitySection intent={item.intent} title={item.title} summary={item.summary} fields={item.structured_data.fields} />
         <h2 className="mt-7 text-lg font-semibold">Suggested actions</h2>
-        <div className="mt-4 flex flex-wrap gap-3">
-          {supportsSave ? <SaveButton inboxItemId={item.id} /> : null}
+        <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          {supportsSave ? <SaveButton inboxItemId={item.id} showDescription /> : null}
           {suggestedActions.map((action) => <SuggestedActionButton key={action.id} action={action} />)}
-          {supportsPlaceSave ? <SaveButton inboxItemId={item.id} label="Save Place" /> : null}
+          {supportsPlaceSave ? <SaveButton inboxItemId={item.id} label="Save Place" showDescription /> : null}
           {!supportsSave && !supportsPlaceSave && !suggestedActions.length ? <p className="text-sm text-muted-foreground">No grounded actions suggested.</p> : null}
         </div>
         <p className="mt-5 text-sm text-muted-foreground">Suggestions only — AI Inbox has not executed any external action.</p>
         <ActionHistory />
       </section>
-      <section className="mt-6 flex items-center gap-4 rounded-xl border bg-white px-7 py-5 shadow-card"><ImageIcon className="size-6" /><div><p className="font-medium">Original screenshot stored</p><p className="mt-1 text-sm text-muted-foreground">Private path: {item.image_path}</p></div></section>
+      <section className="mt-6 flex items-center gap-4 rounded-xl border bg-white px-7 py-5 shadow-card"><ImageIcon className="size-6" /><div><p className="font-medium">{item.image_path ? "Original screenshot stored" : "Portfolio demo scenario"}</p><p className="mt-1 text-sm text-muted-foreground">{item.image_path ? `Private path: ${item.image_path}` : "Representative data for demonstrating the AI Inbox workflow."}</p></div></section>
     </div>
   );
 }

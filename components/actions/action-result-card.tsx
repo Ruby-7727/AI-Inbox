@@ -21,6 +21,7 @@ export function ActionResultCard({ status, actionTitle, resultTitle, message, co
   const completed = status === "completed";
   const showResearch = completed && actionType === "research" && researchResult;
   const Icon = completed ? CircleCheckBig : CircleX;
+  const heading = completed ? resultTitle ?? message : "Action failed";
 
   return (
     <section
@@ -36,9 +37,9 @@ export function ActionResultCard({ status, actionTitle, resultTitle, message, co
           <Icon className="size-5" strokeWidth={2} aria-hidden="true" />
         </span>
         <div className="min-w-0 flex-1">
-          <p className={cn("font-semibold", completed ? "text-green-800" : "text-red-800")}>{resultTitle ?? message}</p>
+          <p className={cn("font-semibold", completed ? "text-green-800" : "text-red-800")}>{heading}</p>
           <p className="mt-1 text-sm font-medium text-slate-700">{actionTitle}</p>
-          {resultTitle && !showResearch ? <p className="mt-1 text-sm text-slate-600">{message}</p> : null}
+          {(!completed || resultTitle) && !showResearch ? <p className="mt-1 text-sm text-slate-600">{message || "This action could not be completed."}</p> : null}
           {completed && completedAt ? (
             <time className="mt-2 block text-xs text-green-700" dateTime={completedAt.toISOString()} title={completedAt.toLocaleString()}>
               Completed just now

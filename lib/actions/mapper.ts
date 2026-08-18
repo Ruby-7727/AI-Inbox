@@ -111,6 +111,11 @@ function withActionContext(
   if (action.type === "research") {
     return {
       ...action,
+      description: intent === "shop"
+        ? "Find more details and alternatives"
+        : intent === "go"
+          ? "Review this place and plan next steps"
+          : "Explore this information further",
       researchType: intent === "go" ? "trip" : intent === "shop" ? "product" : "general",
       sourceTitle: cleanValue(context.itemTitle),
       sourceSummary: cleanValue(context.itemDescription),

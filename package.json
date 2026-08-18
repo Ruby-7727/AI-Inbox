@@ -15,6 +15,8 @@
     "test:research-action": "node --conditions=react-server --import tsx scripts/test-research-action.ts",
     "test:research-ui": "tsx scripts/test-research-result.tsx",
     "test:action-saved": "tsx scripts/test-action-saved-refinement.ts",
+    "test:demo-scenarios": "tsx scripts/test-demo-scenarios.ts",
+    "test:uncertainty-ui": "tsx scripts/test-uncertainty-ui.tsx",
     "test:analysis-contract": "tsx scripts/test-analysis-contract.ts",
     "test:zhipu-provider": "node --conditions=react-server --import tsx scripts/test-zhipu-provider.ts",
     "test:ai": "node scripts/test-ai-analysis.mjs"

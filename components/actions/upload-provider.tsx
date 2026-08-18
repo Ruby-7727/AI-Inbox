@@ -16,7 +16,7 @@ export function UploadProvider({ children }: Readonly<{ children: React.ReactNod
   return (
     <UploadContext.Provider value={{ openUpload: () => setOpen(true) }}>
       {children}
-      <UploadModal open={open} onOpenChange={setOpen} />
+      {open ? <UploadModal open onOpenChange={setOpen} /> : null}
     </UploadContext.Provider>
   );
 }

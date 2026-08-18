@@ -115,15 +115,18 @@ export function SuggestedActionButton({ action: initialAction }: { action: AIAct
   return (
     <>
       <Button
-        className="h-11 min-w-36"
+        className="h-auto min-h-20 w-full min-w-0 justify-start whitespace-normal px-4 py-3 text-left"
         disabled={state === "executing" || state === "confirming"}
         onClick={requestConfirmation}
         title={action.description}
         variant={state === "idle" ? "default" : "outline"}
         type="button"
       >
-        {state === "executing" ? <LoaderCircle className="size-4.5 animate-spin" aria-hidden="true" /> : <Icon className="size-4.5" strokeWidth={1.8} aria-hidden="true" />}
-        {state === "executing" ? action.type === "research" ? "Researching your screenshot..." : "Working..." : action.title}
+        {state === "executing" ? <LoaderCircle className="size-4.5 shrink-0 animate-spin" aria-hidden="true" /> : <Icon className="size-4.5 shrink-0" strokeWidth={1.8} aria-hidden="true" />}
+        <span>
+          <span className="block">{state === "executing" ? action.type === "research" ? "Researching your screenshot..." : "Working..." : action.title}</span>
+          <span className="mt-1 block text-xs font-normal opacity-80">{action.description}</span>
+        </span>
       </Button>
       <ActionConfirmDialog
         action={action}

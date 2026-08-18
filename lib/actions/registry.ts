@@ -13,31 +13,31 @@ export const actionRegistry: Record<ActionType, ActionDefinition> = {
   calendar: {
     id: "calendar",
     title: "Add Calendar",
-    description: "Create a calendar-ready event from the extracted details.",
+    description: "Create an event reminder",
     icon: "calendar-days",
   },
   reminder: {
     id: "reminder",
     title: "Remind Me",
-    description: "Prepare a reminder from the extracted date and time.",
+    description: "Set a reminder for this task",
     icon: "bell",
   },
   map: {
     id: "map",
     title: "Open Map",
-    description: "Open the extracted location in a map experience.",
+    description: "View this location",
     icon: "map-pin",
   },
   research: {
     id: "research",
     title: "Research",
-    description: "Start researching the recognized subject.",
+    description: "Explore this information further",
     icon: "search",
   },
   compare: {
     id: "compare",
     title: "Compare",
-    description: "Prepare a comparison for the recognized product.",
+    description: "Compare options and key details",
     icon: "chart",
   },
 };

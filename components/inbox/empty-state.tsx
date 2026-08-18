@@ -19,8 +19,8 @@ export function EmptyState() {
           <ArrowRight className="size-8 text-slate-400" />
           <span className="grid size-20 place-items-center rounded-xl border border-blue-200 bg-white"><CheckSquare className="size-9" /></span>
         </div>
-        <h2 className="mt-10 text-3xl font-semibold tracking-[-0.03em]">Your screenshots can do more.</h2>
-        <p className="mx-auto mt-3 max-w-lg text-lg leading-7 text-muted-foreground">Drop a screenshot here and AI Inbox will understand what it is and suggest what to do next.</p>
+        <h2 className="mt-10 text-3xl font-semibold tracking-[-0.03em]">Upload a screenshot and AI Inbox will organize it for you.</h2>
+        <p className="mx-auto mt-3 max-w-lg text-lg leading-7 text-muted-foreground">AI Inbox identifies what matters, structures the details, and suggests what you can do next.</p>
         <UploadButton className="mt-8 min-w-72" />
         <p className="mt-4 text-sm text-muted-foreground">Or paste with ⌘V / Ctrl+V</p>
         <div className="mt-16 flex justify-center divide-x">

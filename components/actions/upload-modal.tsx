@@ -18,7 +18,14 @@ export function UploadModal({ open, onOpenChange }: { open: boolean; onOpenChang
 
   function finishUpload() {
     onOpenChange(false);
-    router.push("/analyze");
+    if (window.location.pathname === "/analyze") window.location.reload();
+    else router.push("/analyze");
+  }
+
+  function showAnalysisFailure() {
+    onOpenChange(false);
+    if (window.location.pathname === "/analyze") window.location.reload();
+    else router.push("/analyze");
   }
 
   if (!open) return null;
@@ -38,7 +45,7 @@ export function UploadModal({ open, onOpenChange }: { open: boolean; onOpenChang
             </button>
           </div>
         </div>
-        <ScreenshotUploader onCancel={() => onOpenChange(false)} onComplete={finishUpload} />
+        <ScreenshotUploader onAnalysisFailed={showAnalysisFailure} onCancel={() => onOpenChange(false)} onComplete={finishUpload} />
       </div>
     </div>
   );
