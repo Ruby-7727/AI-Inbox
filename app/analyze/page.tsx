@@ -8,6 +8,7 @@ import { SuggestedActionButton } from "@/components/actions/suggested-action-but
 import { ActionHistory } from "@/components/actions/action-history";
 import { SaveButton } from "@/components/actions/save-button";
 import { mapSuggestedActions } from "@/lib/actions/mapper";
+import { isPlaceRecommendation } from "@/lib/actions/place-recommendation";
 import type { AnalyzeApiResponse } from "@/types/analysis";
 
 export default function AnalyzePage() {
@@ -70,6 +71,11 @@ function AnalysisResultCard({ analysis }: { analysis: AnalyzeApiResponse | null 
     inboxItemId: analysis.id,
   });
   const supportsSave = result.intent === "shop" || result.intent === "remember";
+  const supportsPlaceSave = result.intent === "go" && isPlaceRecommendation({
+    title: result.title,
+    summary: result.summary,
+    fields: result.fields,
+  });
   return (
     <div className="py-2">
       <Link className="inline-flex items-center gap-2 text-slate-600 hover:text-primary" href="/inbox"><ArrowLeft className="size-5" />Back to Inbox</Link>
@@ -90,7 +96,8 @@ function AnalysisResultCard({ analysis }: { analysis: AnalyzeApiResponse | null 
         <div className="mt-4 flex flex-wrap gap-3">
           {supportsSave ? <SaveButton inboxItemId={analysis.id} /> : null}
           {suggestedActions.map((action) => <SuggestedActionButton key={action.id} action={action} />)}
-          {!supportsSave && !suggestedActions.length ? <p className="text-sm text-muted-foreground">No grounded actions suggested.</p> : null}
+          {supportsPlaceSave ? <SaveButton inboxItemId={analysis.id} label="Save Place" /> : null}
+          {!supportsSave && !supportsPlaceSave && !suggestedActions.length ? <p className="text-sm text-muted-foreground">No grounded actions suggested.</p> : null}
         </div>
         <p className="mt-5 text-sm text-muted-foreground">Suggestions only — AI Inbox has not executed any external action.</p>
         <ActionHistory />

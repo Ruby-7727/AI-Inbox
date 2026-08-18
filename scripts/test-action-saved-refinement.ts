@@ -43,7 +43,30 @@ const go = inboxRowToCard(item({
   title: "Spain itinerary",
   structured_data: { fields: [{ key: "location", label: "Location", value: "Spain" }], actions: ["navigate", "add_to_plan"] },
 }));
-assert.deepEqual(go.actions.map(({ label }) => label), ["Open Map", "Research Trip"]);
+assert.deepEqual(go.actions.map(({ label }) => label), ["Open Map"]);
+
+const restaurantNavigation = inboxRowToCard(item({
+  intent: "go",
+  title: "Tokyo Ramen",
+  summary: "Navigate to this restaurant.",
+  structured_data: {
+    fields: [{ key: "restaurant", label: "Restaurant", value: "Tokyo Ramen" }],
+    actions: ["navigate"],
+  },
+}));
+assert.deepEqual(restaurantNavigation.actions.map(({ label }) => label), ["Open Map"]);
+
+const recommendedPlace = inboxRowToCard(item({
+  intent: "go",
+  title: "Tokyo coffee shop recommendations",
+  summary: "A curated coffee shop list for a future Tokyo trip.",
+  structured_data: {
+    fields: [{ key: "recommended_cafes", label: "Recommended cafés", value: "Koffee Mameya, Glitch Coffee" }],
+    actions: ["navigate", "research", "save"],
+  },
+}));
+assert.deepEqual(recommendedPlace.actions.map(({ label }) => label), ["Open Map", "Research Trip", "Save Place"]);
+assert.equal(recommendedPlace.actions.find(({ actionType }) => actionType === "research")?.researchType, "trip");
 
 const task = inboxRowToCard(item({ intent: "do", title: "Send PPT", structured_data: { fields: [], actions: ["remind"] } }));
 assert.deepEqual(task.actions.map(({ label }) => label), ["Remind Me"]);

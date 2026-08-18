@@ -1,4 +1,5 @@
 import { createAction, resolveActionType } from "@/lib/actions/registry";
+import { isPlaceRecommendation } from "@/lib/actions/place-recommendation";
 import { combineReminderDateAndTime } from "@/lib/actions/reminder-time";
 import type { AIAction, ActionType } from "@/lib/actions/types";
 import type { AnalysisAction, AnalysisField, AnalysisIntent } from "@/types/analysis";
@@ -25,15 +26,17 @@ type CalendarTiming = {
 };
 
 const intentActionMap: Partial<Record<AnalysisIntent, readonly IntentActionDefinition[]>> = {
-  go: [
-    { type: "map" },
-    { type: "research", title: "Research Trip" },
-  ],
   attend: [{ type: "calendar" }],
   remember: [{ type: "research" }],
   shop: [{ type: "research", title: "Research Product" }],
   do: [{ type: "reminder" }],
 };
+
+const goNavigationActions: readonly IntentActionDefinition[] = [{ type: "map" }];
+const goRecommendationActions: readonly IntentActionDefinition[] = [
+  { type: "map" },
+  { type: "research", title: "Research Trip" },
+];
 
 /**
  * Normalizes provider suggestions into the small set of actions the product can
@@ -45,7 +48,11 @@ export function mapSuggestedActions(
   suggestions: readonly AnalysisAction[],
   context: ActionMappingContext = {},
 ): AIAction[] {
-  const intentActions = intentActionMap[intent];
+  const intentActions = intent === "go"
+    ? isPlaceRecommendation({ title: context.itemTitle, summary: context.itemDescription, fields: context.fields })
+      ? goRecommendationActions
+      : goNavigationActions
+    : intentActionMap[intent];
   if (intentActions) {
     return intentActions.map(({ type, title }) => withActionContext(
       {

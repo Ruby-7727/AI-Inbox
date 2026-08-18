@@ -2,6 +2,7 @@ import type { LucideIcon } from "lucide-react";
 import { Bell, Bookmark, CalendarDays, ChartNoAxesColumnIncreasing, MapPin, Search } from "lucide-react";
 
 import { mapSuggestedActions } from "@/lib/actions/mapper";
+import { isPlaceRecommendation } from "@/lib/actions/place-recommendation";
 import type { ActionType } from "@/lib/actions/types";
 import type { InboxItem } from "@/types";
 import type { InboxItemRow } from "@/types/database";
@@ -46,6 +47,11 @@ export function inboxRowToCard(item: InboxItemRow): InboxItem {
     primary: action.type === "calendar",
   }));
   const supportsPersistentSave = item.intent === "shop" || item.intent === "remember";
+  const supportsPlaceSave = item.intent === "go" && isPlaceRecommendation({
+    title: item.title,
+    summary: item.summary,
+    fields: item.structured_data.fields,
+  });
 
   return {
     id: item.id,
@@ -57,6 +63,7 @@ export function inboxRowToCard(item: InboxItemRow): InboxItem {
     actions: [
       ...(supportsPersistentSave ? [{ label: "Save", icon: Bookmark }] : []),
       ...frameworkActions,
+      ...(supportsPlaceSave ? [{ label: "Save Place", icon: Bookmark }] : []),
     ],
   };
 }

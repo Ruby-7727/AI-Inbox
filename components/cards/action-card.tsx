@@ -27,8 +27,8 @@ export function ActionCard({ item, savedItemId }: { item: InboxItem; savedItemId
         ) : null}
       </div>
       <div className="hidden items-center gap-3 xl:flex">
-        {item.actions.map((action) => action.label === "Save"
-          ? <SaveButton key={action.label} inboxItemId={item.id} initialSavedItemId={savedItemId} />
+        {item.actions.map((action) => action.label === "Save" || action.label === "Save Place"
+          ? <SaveButton key={action.label} inboxItemId={item.id} initialSavedItemId={savedItemId} label={action.label} />
           : <ActionButton key={action.label} {...action} />)}
       </div>
     </article>
