@@ -45,7 +45,7 @@ export function inboxRowToCard(item: InboxItemRow): InboxItem {
     inboxItemId: action.inboxItemId,
     primary: action.type === "calendar",
   }));
-  const supportsPersistentSave = (item.intent === "shop" || item.intent === "remember") && suggestions.includes("save");
+  const supportsPersistentSave = item.intent === "shop" || item.intent === "remember";
 
   return {
     id: item.id,

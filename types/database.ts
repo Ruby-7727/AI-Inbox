@@ -32,10 +32,13 @@ export type InboxItemInsert = Omit<InboxItemRow, "created_at" | "updated_at" | "
 
 export type InboxItemUpdate = Partial<Omit<InboxItemInsert, "id" | "user_id">>;
 
+export type SavedItemCategory = "product" | "place" | "note";
+
 export type SavedItemRow = {
   id: string;
   user_id: string;
   inbox_item_id: string;
+  category: SavedItemCategory;
   created_at: string;
 };
 

@@ -33,3 +33,7 @@ Run `migrations/202608140002_create_reminders.sql` once in the SQL Editor after 
 - RLS policies allowing authenticated users to select, insert, update, and delete only rows whose `user_id` matches `auth.uid()`.
 
 This migration only creates the persistence foundation. It does not add reminder UI, action execution, notifications, or an API route. The migration must be applied manually in the Supabase SQL Editor before application code can use the table.
+
+## Phase 6.2 saved categories
+
+Run `migrations/202608180001_saved_item_categories.sql` once after the saved-items migration. It adds the constrained `category` column used by the Products, Places, and Notes filters. Existing saved rows are retained and default to `note`.

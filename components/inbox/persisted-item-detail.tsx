@@ -7,6 +7,7 @@ import { ArrowLeft, Image as ImageIcon } from "lucide-react";
 import { ConfidenceBadge } from "@/components/cards/confidence-badge";
 import { ActionHistory } from "@/components/actions/action-history";
 import { SuggestedActionButton } from "@/components/actions/suggested-action-button";
+import { SaveButton } from "@/components/actions/save-button";
 import { mapSuggestedActions } from "@/lib/actions/mapper";
 import { getInboxItemById } from "@/lib/supabase/inboxItems";
 import type { InboxItemRow } from "@/types/database";
@@ -34,6 +35,7 @@ export function PersistedItemDetail({ id }: { id: string }) {
     itemDescription: item.summary,
     inboxItemId: item.id,
   });
+  const supportsSave = item.intent === "shop" || item.intent === "remember";
 
   return (
     <div>
@@ -53,7 +55,9 @@ export function PersistedItemDetail({ id }: { id: string }) {
         </div>
         <h2 className="mt-7 text-lg font-semibold">Suggested actions</h2>
         <div className="mt-4 flex flex-wrap gap-3">
-          {suggestedActions.length ? suggestedActions.map((action) => <SuggestedActionButton key={action.id} action={action} />) : <p className="text-sm text-muted-foreground">No grounded actions suggested.</p>}
+          {supportsSave ? <SaveButton inboxItemId={item.id} /> : null}
+          {suggestedActions.map((action) => <SuggestedActionButton key={action.id} action={action} />)}
+          {!supportsSave && !suggestedActions.length ? <p className="text-sm text-muted-foreground">No grounded actions suggested.</p> : null}
         </div>
         <p className="mt-5 text-sm text-muted-foreground">Suggestions only — AI Inbox has not executed any external action.</p>
         <ActionHistory />

@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 
+import { savedCategoryForIntent } from "@/lib/supabase/savedCategories";
 import type { Database } from "@/types/database";
 
 export async function POST(request: Request) {
@@ -13,7 +14,7 @@ export async function POST(request: Request) {
   const { supabase, userId } = authenticated;
   const { data: inboxItem, error: inboxError } = await supabase
     .from("inbox_items")
-    .select("id")
+    .select("id, intent")
     .eq("id", inboxItemId)
     .eq("user_id", userId)
     .maybeSingle();
@@ -27,6 +28,7 @@ export async function POST(request: Request) {
   const { data, error } = await supabase.from("saved_items").insert({
     user_id: userId,
     inbox_item_id: inboxItemId,
+    category: savedCategoryForIntent(inboxItem.intent),
   }).select().single();
 
   if (error?.code === "23505") {

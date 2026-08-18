@@ -6,12 +6,24 @@ import { AlertCircle, Bookmark, Eye, LoaderCircle, Trash2 } from "lucide-react";
 
 import { IntentBadge } from "@/components/cards/intent-badge";
 import { inboxRowToCard } from "@/lib/supabase/presenters";
+import { normalizeSavedCategory } from "@/lib/supabase/savedCategories";
 import { getSavedItems, removeSavedItem, type SavedInboxItem } from "@/lib/supabase/savedItems";
+import type { SavedItemCategory } from "@/types/database";
+
+type SavedFilter = "all" | SavedItemCategory;
+
+const tabs: Array<{ label: string; value: SavedFilter }> = [
+  { label: "All", value: "all" },
+  { label: "Products", value: "product" },
+  { label: "Places", value: "place" },
+  { label: "Notes", value: "note" },
+];
 
 export function SavedContent() {
   const [items, setItems] = useState<SavedInboxItem[] | null>(null);
   const [removingId, setRemovingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [activeFilter, setActiveFilter] = useState<SavedFilter>("all");
 
   useEffect(() => {
     let active = true;
@@ -35,16 +47,30 @@ export function SavedContent() {
     }
   }
 
-  if (items === null && !error) return <div className="mt-7 grid gap-7 lg:grid-cols-2"><div className="h-80 animate-pulse rounded-xl border bg-white/60" /><div className="h-80 animate-pulse rounded-xl border bg-white/60" /></div>;
+  const visibleItems = items?.filter(({ savedItem }) => activeFilter === "all" || normalizeSavedCategory(savedItem.category) === activeFilter);
 
   return (
     <>
+      <nav className="mt-12 flex gap-6 border-b text-base text-slate-600" aria-label="Saved item categories">
+        {tabs.map((tab) => (
+          <button
+            aria-current={activeFilter === tab.value ? "page" : undefined}
+            className={activeFilter === tab.value ? "border-b-2 border-primary px-4 pb-5 font-medium text-primary" : "px-4 pb-5 transition-colors hover:text-slate-900"}
+            key={tab.value}
+            onClick={() => setActiveFilter(tab.value)}
+            type="button"
+          >
+            {tab.label}
+          </button>
+        ))}
+      </nav>
+      {items === null && !error ? <div className="mt-7 grid gap-7 lg:grid-cols-2"><div className="h-80 animate-pulse rounded-xl border bg-white/60" /><div className="h-80 animate-pulse rounded-xl border bg-white/60" /></div> : null}
       {error ? <div className="mt-7 flex items-center gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"><AlertCircle className="size-5" />{error}</div> : null}
-      {!items?.length ? (
-        <section className="mt-7 grid min-h-80 place-items-center rounded-xl border bg-white text-center shadow-card"><div><Bookmark className="mx-auto size-9 text-primary" /><h2 className="mt-4 text-xl font-semibold">No saved items yet</h2><p className="mt-2 text-muted-foreground">Save an Inbox item and it will appear here.</p></div></section>
-      ) : (
+      {items !== null && !visibleItems?.length ? (
+        <SavedEmptyState filter={activeFilter} />
+      ) : visibleItems?.length ? (
         <section className="mt-7 grid gap-7 lg:grid-cols-2">
-          {items.map(({ savedItem, inboxItem }) => {
+          {visibleItems.map(({ savedItem, inboxItem }) => {
             const card = inboxRowToCard(inboxItem);
             return (
               <article key={savedItem.id} className="flex min-h-80 flex-col rounded-xl border bg-white p-7 shadow-card">
@@ -54,7 +80,22 @@ export function SavedContent() {
             );
           })}
         </section>
-      )}
+      ) : null}
     </>
+  );
+}
+
+function SavedEmptyState({ filter }: { filter: SavedFilter }) {
+  const title = filter === "product"
+    ? "No saved products yet."
+    : filter === "place"
+      ? "No saved places yet."
+      : filter === "note"
+        ? "No saved notes yet."
+        : "No saved items yet.";
+  return (
+    <section className="mt-7 grid min-h-80 place-items-center rounded-xl border bg-white text-center shadow-card">
+      <div><Bookmark className="mx-auto size-9 text-primary" /><h2 className="mt-4 text-xl font-semibold">{title}</h2><p className="mt-2 text-muted-foreground">Save an Inbox item and it will appear here.</p></div>
+    </section>
   );
 }

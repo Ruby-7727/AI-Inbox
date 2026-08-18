@@ -30,11 +30,8 @@ const intentActionMap: Partial<Record<AnalysisIntent, readonly IntentActionDefin
     { type: "research", title: "Research Trip" },
   ],
   attend: [{ type: "calendar" }],
-  remember: [{ type: "reminder" }],
-  shop: [
-    { type: "compare" },
-    { type: "research", title: "Research Product" },
-  ],
+  remember: [{ type: "research" }],
+  shop: [{ type: "research", title: "Research Product" }],
   do: [{ type: "reminder" }],
 };
 
