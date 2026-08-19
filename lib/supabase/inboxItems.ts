@@ -69,6 +69,20 @@ export async function updateInboxItem(id: string, values: InboxItemUpdate) {
   return data;
 }
 
+export async function deleteInboxItem(id: string) {
+  const user = await ensureAnonymousUser();
+  const { data, error } = await getSupabaseBrowserClient()
+    .from("inbox_items")
+    .delete()
+    .eq("id", id)
+    .eq("user_id", user.id)
+    .select("id")
+    .maybeSingle();
+  if (error) throw error;
+  if (!data) throw new Error("Item could not be deleted.");
+  return data;
+}
+
 export function analysisFromInboxItem(item: InboxItemRow): ScreenshotAnalysis {
   return {
     intent: item.intent,

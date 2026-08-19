@@ -12,6 +12,7 @@ import { AnalysisFailedState } from "@/components/analysis/analysis-failed-state
 import { LowConfidenceResult } from "@/components/analysis/low-confidence-result";
 import { ItemVisual } from "@/components/cards/item-visual";
 import { IntentBadge, intentLabel } from "@/components/cards/intent-badge";
+import { DeleteItemButton } from "@/components/inbox/item-management-menu";
 import { mapSuggestedActions } from "@/lib/actions/mapper";
 import { isPlaceRecommendation } from "@/lib/actions/place-recommendation";
 import { LOW_CONFIDENCE_THRESHOLD } from "@/lib/analysis/uncertainty";
@@ -81,7 +82,7 @@ function AnalysisResultCard({ analysis }: { analysis: AnalyzeApiResponse | null 
 
   const { result } = analysis;
   if (result.confidence < LOW_CONFIDENCE_THRESHOLD) {
-    return <div className="py-2"><Link className="inline-flex items-center gap-2 text-[#6d5b51] hover:text-primary" href="/inbox"><ArrowLeft className="size-5" />Back to Inbox</Link><LowConfidenceResult imagePath={analysis.imagePath} inboxItemId={analysis.id} intent={result.intent} title={result.title ?? "Unclear screenshot"} /></div>;
+    return <div className="py-2"><DetailTopBar itemId={analysis.id} /><LowConfidenceResult imagePath={analysis.imagePath} inboxItemId={analysis.id} intent={result.intent} title={result.title ?? "Unclear screenshot"} /></div>;
   }
   const suggestedActions = mapSuggestedActions(result.intent, result.actions, {
     fields: result.fields,
@@ -99,7 +100,7 @@ function AnalysisResultCard({ analysis }: { analysis: AnalyzeApiResponse | null 
   const showVisual = shouldShowItemVisual({ imagePath: analysis.imagePath, intent: result.intent, title: result.title ?? "Untitled screenshot", supportingText: result.summary });
   return (
     <div className="py-2">
-      <Link className="inline-flex items-center gap-2 text-[#6d5b51] hover:text-primary" href="/inbox"><ArrowLeft className="size-5" />Back to Inbox</Link>
+      <DetailTopBar itemId={analysis.id} />
       <section className="mt-6 rounded-[1.75rem] border border-[#e5d3c2] bg-card/95 p-6 shadow-card sm:p-8">
         {showVisual ? <ItemVisual className="mb-8" imagePath={analysis.imagePath} intent={result.intent} title={result.title ?? "Untitled screenshot"} variant="hero" /> : null}
         <div className="flex items-center justify-between gap-5">
@@ -128,6 +129,10 @@ function AnalysisResultCard({ analysis }: { analysis: AnalyzeApiResponse | null 
       </section>
     </div>
   );
+}
+
+function DetailTopBar({ itemId }: { itemId: string }) {
+  return <div className="flex items-center justify-between gap-4"><Link className="inline-flex items-center gap-2 text-[#6d5b51] hover:text-primary" href="/inbox"><ArrowLeft className="size-5" />Back to Inbox</Link><DeleteItemButton itemId={itemId} /></div>;
 }
 
 function ProcessStep({ label, detail, index, stage, last }: { label: string; detail: string; index: number; stage: number; last?: boolean }) {

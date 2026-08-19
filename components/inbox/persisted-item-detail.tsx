@@ -12,6 +12,7 @@ import { SaveButton } from "@/components/actions/save-button";
 import { ExplainabilitySection } from "@/components/analysis/explainability-section";
 import { LowConfidenceResult } from "@/components/analysis/low-confidence-result";
 import { ItemVisual } from "@/components/cards/item-visual";
+import { DeleteItemButton } from "@/components/inbox/item-management-menu";
 import { mapSuggestedActions } from "@/lib/actions/mapper";
 import { isPlaceRecommendation } from "@/lib/actions/place-recommendation";
 import { LOW_CONFIDENCE_THRESHOLD } from "@/lib/analysis/uncertainty";
@@ -35,7 +36,7 @@ export function PersistedItemDetail({ id }: { id: string }) {
   if (item === undefined) return <div className="h-96 animate-pulse rounded-xl border bg-white/60" aria-label="Loading item" />;
   if (item === null) return <DetailMessage title="Item not found" detail="This item does not exist or belongs to another user." />;
   if (Number(item.confidence ?? 0) < LOW_CONFIDENCE_THRESHOLD) {
-    return <div><Link className="inline-flex items-center gap-3 text-[#6d5b51] hover:text-primary" href="/inbox"><ArrowLeft className="size-5" />Back to Inbox</Link><LowConfidenceResult imagePath={item.image_path} inboxItemId={item.id} intent={item.intent} title={item.title} /></div>;
+    return <div><DetailTopBar itemId={item.id} /><LowConfidenceResult imagePath={item.image_path} inboxItemId={item.id} intent={item.intent} title={item.title} /></div>;
   }
 
   const suggestedActions = mapSuggestedActions(item.intent, item.structured_data.actions ?? [], {
@@ -55,7 +56,7 @@ export function PersistedItemDetail({ id }: { id: string }) {
 
   return (
     <div>
-      <Link className="inline-flex items-center gap-3 text-[#6d5b51] hover:text-primary" href="/inbox"><ArrowLeft className="size-5" />Back to Inbox</Link>
+      <DetailTopBar itemId={item.id} />
       <div className="mt-8 flex items-center justify-between">
         <IntentBadge compact intent={intentLabel(item.intent)} />
         <ConfidenceBadge value={Number(item.confidence ?? 0)} />
@@ -84,6 +85,10 @@ export function PersistedItemDetail({ id }: { id: string }) {
       <section className="mt-6 flex items-center gap-4 rounded-2xl border border-[#e5d3c2] bg-card/85 px-7 py-5 shadow-card"><span className="grid size-10 place-items-center rounded-xl bg-[#f1e4d9] text-primary"><ImageIcon className="size-5" /></span><div><p className="font-medium">{item.image_path ? "Original screenshot stored" : "Portfolio demo scenario"}</p><p className="mt-1 text-sm text-muted-foreground">{item.image_path ? "Private screenshot preview is available above." : "Representative data for demonstrating the AI Inbox workflow."}</p></div></section>
     </div>
   );
+}
+
+function DetailTopBar({ itemId }: { itemId: string }) {
+  return <div className="flex items-center justify-between gap-4"><Link className="inline-flex items-center gap-3 text-[#6d5b51] hover:text-primary" href="/inbox"><ArrowLeft className="size-5" />Back to Inbox</Link><DeleteItemButton itemId={itemId} /></div>;
 }
 
 function DetailMessage({ title, detail }: { title: string; detail: string }) {
