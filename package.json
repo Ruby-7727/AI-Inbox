@@ -45,11 +45,9 @@
     "typescript": "^6.0.2"
   },
   "pnpm": {
-    "ignoredBuiltDependencies": [
-      "unrs-resolver"
-    ],
     "onlyBuiltDependencies": [
-      "esbuild"
+      "esbuild",
+      "unrs-resolver"
     ]
   }
 }
