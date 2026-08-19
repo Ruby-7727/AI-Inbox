@@ -65,6 +65,7 @@ export function inboxRowToCard(item: InboxItemRow): InboxItem {
       ...frameworkActions,
       ...(supportsPlaceSave ? [{ label: "Save Place", icon: Bookmark }] : []),
     ],
+    imagePath: item.image_path,
   };
 }
 

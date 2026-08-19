@@ -27,13 +27,13 @@ export function ActionResultCard({ status, actionTitle, resultTitle, message, co
     <section
       aria-live="polite"
       className={cn(
-        "min-w-72 rounded-xl border p-4",
+        "min-w-72 rounded-2xl border p-4 shadow-[0_5px_18px_rgb(104_68_45_/_0.05)]",
         showResearch && "w-full max-w-2xl",
-        completed ? "border-green-200 bg-green-50/70" : "border-red-200 bg-red-50/70",
+        completed ? "border-[#cdd9c3] bg-[#edf2e8]" : "border-[#e3c2bd] bg-[#f8e8e4]",
       )}
     >
       <div className="flex items-start gap-3">
-        <span className={cn("grid size-9 shrink-0 place-items-center rounded-full bg-white", completed ? "text-green-600" : "text-red-600")}>
+        <span className={cn("grid size-9 shrink-0 place-items-center rounded-full bg-[#fffdf8]", completed ? "text-[#5f7d4b]" : "text-[#a94f48]")}>
           <Icon className="size-5" strokeWidth={2} aria-hidden="true" />
         </span>
         <div className="min-w-0 flex-1">

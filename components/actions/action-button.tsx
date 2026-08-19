@@ -19,6 +19,14 @@ const actionIcons: Record<ActionIconIdentifier, LucideIcon> = {
   chart: ChartNoAxesColumnIncreasing,
 };
 
+const actionStateLabels: Record<ActionType, { loading: string; success: string }> = {
+  map: { loading: "Opening...", success: "Opened" },
+  calendar: { loading: "Adding...", success: "Added" },
+  reminder: { loading: "Setting...", success: "Set" },
+  research: { loading: "Researching...", success: "Researched" },
+  compare: { loading: "Comparing...", success: "Compared" },
+};
+
 export function ActionButton({ label, icon: FallbackIcon, primary, className, actionType, location, reminderTitle, reminderDescription, reminderDate, remindAt, eventTitle, eventDate, endDate, startAt, endAt, isAllDay, researchType, sourceTitle, sourceSummary, structuredData, inboxItemId }: { label: string; icon: LucideIcon; primary?: boolean; className?: string; actionType?: ActionType; location?: string | null; reminderTitle?: string | null; reminderDescription?: string | null; reminderDate?: string | null; remindAt?: string | null; eventTitle?: string | null; eventDate?: string | null; endDate?: string | null; startAt?: string | null; endAt?: string | null; isAllDay?: boolean | null; researchType?: ResearchType | null; sourceTitle?: string | null; sourceSummary?: string | null; structuredData?: ResearchStructuredData | null; inboxItemId?: string | null }) {
   const [action, setAction] = useState<AIAction | null>(() => actionType ? {
     ...createAction(actionType),
@@ -45,6 +53,14 @@ export function ActionButton({ label, icon: FallbackIcon, primary, className, ac
 
   const definition = action ? actionRegistry[action.type] : null;
   const Icon = action?.status === "completed" ? Check : definition ? actionIcons[definition.icon] : FallbackIcon;
+  const failed = action?.status === "failed";
+  const buttonLabel = executing
+    ? action ? actionStateLabels[action.type].loading : "Loading..."
+    : action?.status === "completed"
+      ? actionStateLabels[action.type].success
+      : failed
+        ? "Retry"
+        : action?.title?.trim() || label.trim() || "Continue";
 
   async function handleClick() {
     if (!action || executing || action.status === "completed") return;
@@ -57,15 +73,15 @@ export function ActionButton({ label, icon: FallbackIcon, primary, className, ac
 
   return (
     <Button
-      className={cn("h-11 min-w-36", action?.status === "completed" && "border-green-200 bg-green-50 text-green-700 hover:bg-green-50", className)}
+      className={cn("h-11 min-w-36", action?.status === "completed" && "border-green-200 bg-green-50 text-green-700 hover:bg-green-50", failed && "border-[#dfb2a4] bg-[#fff8f4] text-[#a34f3c]", className)}
       disabled={executing || action?.status === "completed"}
       onClick={action ? handleClick : undefined}
-      title={action?.description}
-      variant={primary && action?.status !== "completed" ? "default" : "outline"}
+      title={failed ? message ?? action?.description : action?.description}
+      variant={primary && action?.status !== "completed" && !failed ? "default" : "outline"}
       type="button"
     >
       {executing ? <LoaderCircle className="size-4.5 animate-spin" aria-hidden="true" /> : <Icon className="size-4.5" strokeWidth={1.8} aria-hidden="true" />}
-      {executing ? "Working..." : message ?? action?.title ?? label}
+      {buttonLabel}
     </Button>
   );
 }

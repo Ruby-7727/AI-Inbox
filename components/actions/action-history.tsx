@@ -11,7 +11,7 @@ export function ActionHistory() {
   if (!actions.length) return null;
 
   return (
-    <section className="mt-7 border-t pt-6" aria-labelledby="recent-actions-title">
+    <section className="mt-7 border-t border-[#eadccf] pt-6" aria-labelledby="recent-actions-title">
       <div className="flex items-center justify-between gap-4">
         <h2 className="text-lg font-semibold" id="recent-actions-title">Recent Actions</h2>
         <Button className="h-9 text-muted-foreground" onClick={clearHistory} size="sm" type="button" variant="ghost">
@@ -19,7 +19,7 @@ export function ActionHistory() {
           Clear
         </Button>
       </div>
-      <div className="mt-3 divide-y overflow-hidden rounded-xl border bg-slate-50/50">
+      <div className="mt-3 divide-y divide-[#eadccf] overflow-hidden rounded-2xl border border-[#e4d1c0] bg-[#fffaf4]">
         {actions.map((action) => {
           const completed = action.status === "completed";
           const Icon = completed ? CircleCheckBig : CircleX;

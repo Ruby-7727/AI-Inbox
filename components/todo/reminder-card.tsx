@@ -16,14 +16,14 @@ export function ReminderCard({ reminder, updating, onStatusChange }: ReminderCar
   const nextStatus: ReminderStatus = completed ? "pending" : "completed";
 
   return (
-    <article className="flex min-h-32 flex-col gap-5 px-6 py-5 sm:flex-row sm:items-center sm:px-7">
-      <span className={`grid size-14 shrink-0 place-items-center rounded-xl ${completed ? "bg-green-50 text-green-600" : "bg-blue-50 text-primary"}`}>
+    <article className="flex min-h-32 flex-col gap-5 px-6 py-5 transition-colors hover:bg-[#fffdf8] sm:flex-row sm:items-center sm:px-7">
+      <span className={`grid size-14 shrink-0 place-items-center rounded-2xl border ${completed ? "border-[#cad8bf] bg-[#e9efe3] text-[#5f7d4b]" : "border-[#ead3a8] bg-[#f7e8c8] text-[#b87927]"}`}>
         {completed ? <Check className="size-7" aria-hidden="true" /> : <CalendarClock className="size-7" aria-hidden="true" />}
       </span>
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-3">
-          <h3 className={`text-lg font-semibold ${completed ? "text-slate-500" : "text-slate-900"}`}>{reminder.title}</h3>
-          <span className={`rounded-md px-2.5 py-1 text-xs font-medium ${completed ? "bg-green-50 text-green-700" : "bg-blue-50 text-primary"}`}>
+          <h3 className={`text-lg font-semibold ${completed ? "text-[#8f8178]" : "text-[#3f302a]"}`}>{reminder.title}</h3>
+          <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${completed ? "bg-[#e9efe3] text-[#5f7d4b]" : "bg-[#f7e8c8] text-[#a66d22]"}`}>
             {completed ? "Completed" : "Pending"}
           </span>
         </div>

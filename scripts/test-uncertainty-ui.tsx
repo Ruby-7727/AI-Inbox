@@ -13,13 +13,14 @@ assert.equal(possibilities.mostLikely, "remember");
 assert.deepEqual(possibilities.alternatives, ["shop", "go", "attend"]);
 
 const lowConfidence = renderToStaticMarkup(
-  <UploadProvider><LowConfidenceResult inboxItemId="00000000-0000-4000-8000-000000000001" intent="remember" /></UploadProvider>,
+  <UploadProvider><LowConfidenceResult inboxItemId="00000000-0000-4000-8000-000000000001" intent="remember" title="Reading list" /></UploadProvider>,
 );
 assert.match(lowConfidence, /Low confidence result/);
 assert.match(lowConfidence, /Possible categories/);
 assert.match(lowConfidence, /Most likely/);
 assert.match(lowConfidence, /Could also be/);
-assert.doesNotMatch(lowConfidence, /%|progressbar|Category guidance/);
+assert.doesNotMatch(lowConfidence, />\s*\d+%\s*</);
+assert.doesNotMatch(lowConfidence, /progressbar|Category guidance/);
 assert.match(lowConfidence, /Save item/);
 assert.match(lowConfidence, /Upload another screenshot/);
 

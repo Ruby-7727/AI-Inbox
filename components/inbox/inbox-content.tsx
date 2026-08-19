@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AlertCircle, Inbox as InboxIcon } from "lucide-react";
+import { AlertCircle, Bookmark, CalendarDays, Inbox as InboxIcon, MapPin, ShoppingBag, SquareCheckBig } from "lucide-react";
 
 import { ActionCard } from "@/components/cards/action-card";
 import { EmptyState } from "@/components/inbox/empty-state";
@@ -13,13 +13,13 @@ import type { InboxItemRow } from "@/types/database";
 
 type InboxFilter = "all" | "attend" | "do" | "go" | "shop" | "remember";
 
-const tabs: Array<{ label: string; value: InboxFilter }> = [
-  { label: "All", value: "all" },
-  { label: "Attend", value: "attend" },
-  { label: "Do", value: "do" },
-  { label: "Go", value: "go" },
-  { label: "Shop", value: "shop" },
-  { label: "Remember", value: "remember" },
+const tabs: Array<{ label: string; value: InboxFilter; icon: typeof InboxIcon }> = [
+  { label: "All", value: "all", icon: InboxIcon },
+  { label: "Attend", value: "attend", icon: CalendarDays },
+  { label: "Do", value: "do", icon: SquareCheckBig },
+  { label: "Go", value: "go", icon: MapPin },
+  { label: "Shop", value: "shop", icon: ShoppingBag },
+  { label: "Remember", value: "remember", icon: Bookmark },
 ];
 
 export function InboxContent() {
@@ -51,27 +51,29 @@ export function InboxContent() {
 
   return (
     <>
-      <nav className="mt-9 flex gap-2 overflow-x-auto border-b text-sm text-slate-600 sm:gap-5" aria-label="Inbox categories">
+      <nav className="mt-7 flex gap-2 overflow-x-auto rounded-[1.35rem] bg-[#f4e8db]/55 p-2 text-sm text-[#6d5b51] shadow-[inset_0_0_0_1px_rgb(222_200_181_/_0.55)]" aria-label="Inbox categories">
         {tabs.map((tab) => (
           <button
             aria-pressed={activeFilter === tab.value}
             className={activeFilter === tab.value
-              ? "shrink-0 border-b-2 border-primary px-3 pb-4 font-medium text-primary"
-              : "shrink-0 px-3 pb-4 transition-colors hover:text-slate-900"}
+              ? "flex shrink-0 items-center gap-2 rounded-2xl bg-[#fffaf3] px-4 py-3 font-semibold text-primary shadow-[0_6px_18px_rgb(104_68_45_/_0.08)]"
+              : "flex shrink-0 items-center gap-2 rounded-2xl px-4 py-3 transition-colors hover:bg-[#fffaf2]/65"}
             key={tab.value}
             onClick={() => setActiveFilter(tab.value)}
             type="button"
           >
+            <tab.icon className="size-4" />
             {tab.label}
+            <span className="rounded-full bg-white/70 px-1.5 py-0.5 text-[11px] text-muted-foreground">{tab.value === "all" ? items.length : items.filter((item) => item.intent === tab.value).length}</span>
           </button>
         ))}
       </nav>
-      <section className="mt-7">
-        <h2 className="text-xl font-semibold">Recent items</h2>
+      <section className="mt-8">
+        <div className="flex items-end justify-between border-b border-[#e6d5c5] pb-4"><div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary/70">Your collection</p><h2 className="mt-1 font-display text-3xl font-semibold text-[#684334]">Recent moments</h2></div><p className="hidden text-sm text-muted-foreground sm:block">A visual archive of things worth keeping.</p></div>
         {items.length === 0 ? <EmptyState /> : visibleItems.length === 0 ? (
           <InboxCategoryEmptyState filter={activeFilter} />
         ) : (
-          <div className="mt-4 space-y-3">
+          <div className="mt-6 space-y-4">
             {visibleItems.map((item) => <ActionCard key={item.id} item={inboxRowToCard(item)} savedItemId={savedItemIds[item.id]} />)}
           </div>
         )}
@@ -83,7 +85,7 @@ export function InboxContent() {
 function InboxCategoryEmptyState({ filter }: { filter: InboxFilter }) {
   const label = tabs.find((tab) => tab.value === filter)?.label ?? "Inbox";
   return (
-    <div className="mt-4 grid min-h-64 place-items-center rounded-xl border bg-white text-center shadow-card">
+    <div className="mt-4 grid min-h-64 place-items-center rounded-2xl border bg-card/85 text-center shadow-card">
       <div>
         <span className="mx-auto grid size-12 place-items-center rounded-full bg-blue-50 text-primary"><InboxIcon className="size-6" /></span>
         <h3 className="mt-4 text-lg font-semibold">No {label} items yet.</h3>

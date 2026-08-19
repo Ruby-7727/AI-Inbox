@@ -41,4 +41,5 @@ export type AnalyzeApiResponse = {
     type: string;
   };
   result: ScreenshotAnalysis;
+  imagePath?: string | null;
 };

@@ -31,7 +31,7 @@ export function ActionConfirmDialog({ action, open, onCancel, onConfirm }: Actio
 
   return (
     <div
-      className="fixed inset-0 z-50 grid place-items-center bg-slate-950/35 p-6 backdrop-blur-[2px]"
+      className="fixed inset-0 z-50 grid place-items-center bg-[#4a3329]/32 p-6 backdrop-blur-[3px]"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onCancel();
       }}
@@ -40,11 +40,11 @@ export function ActionConfirmDialog({ action, open, onCancel, onConfirm }: Actio
         aria-describedby="action-confirm-description"
         aria-labelledby="action-confirm-title"
         aria-modal="true"
-        className="w-full max-w-md rounded-xl border bg-white p-6 shadow-2xl"
+        className="w-full max-w-md rounded-[1.5rem] border border-[#dfc8b4] bg-[#fffaf3] p-6 shadow-[0_24px_70px_rgb(74_51_41_/_0.22)]"
         role="dialog"
       >
-        <h2 className="text-xl font-semibold tracking-[-0.02em]" id="action-confirm-title">Confirm Action</h2>
-        <div className="mt-5 rounded-lg border bg-slate-50/70 p-4">
+        <h2 className="font-display text-2xl font-semibold tracking-[-0.02em] text-[#713b2b]" id="action-confirm-title">Confirm Action</h2>
+        <div className="mt-5 rounded-xl border border-[#e4d1c0] bg-[#fffaf4] p-4">
           <p className="font-semibold">{action.title}</p>
           <p className="mt-2 text-sm leading-6 text-muted-foreground" id="action-confirm-description">{action.description}</p>
         </div>

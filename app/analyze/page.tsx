@@ -10,9 +10,12 @@ import { SaveButton } from "@/components/actions/save-button";
 import { ExplainabilitySection } from "@/components/analysis/explainability-section";
 import { AnalysisFailedState } from "@/components/analysis/analysis-failed-state";
 import { LowConfidenceResult } from "@/components/analysis/low-confidence-result";
+import { ItemVisual } from "@/components/cards/item-visual";
+import { IntentBadge, intentLabel } from "@/components/cards/intent-badge";
 import { mapSuggestedActions } from "@/lib/actions/mapper";
 import { isPlaceRecommendation } from "@/lib/actions/place-recommendation";
 import { LOW_CONFIDENCE_THRESHOLD } from "@/lib/analysis/uncertainty";
+import { shouldShowItemVisual } from "@/lib/demo/visuals";
 import type { AnalyzeApiResponse } from "@/types/analysis";
 
 export default function AnalyzePage() {
@@ -52,14 +55,14 @@ export default function AnalyzePage() {
 
   return (
     <section className="grid min-h-[calc(100vh-8rem)] place-items-center py-8">
-      <div className="w-full max-w-[570px] rounded-xl border bg-card px-12 py-10 shadow-card">
+      <div className="w-full max-w-[590px] rounded-[1.75rem] border border-[#e5d2c0] bg-card/95 px-9 py-10 shadow-card sm:px-12">
         <div className="text-center">
-          <span className="mx-auto grid size-16 place-items-center rounded-full bg-blue-50 text-primary"><Sparkles className="size-7" aria-hidden="true" /></span>
-          <h1 className="mt-6 text-2xl font-semibold tracking-tight">Analyzing screenshot...</h1>
+          <span className="mx-auto grid size-16 place-items-center rounded-full bg-[#f4dfd2] text-primary shadow-[0_8px_24px_rgb(104_68_45_/_0.08)]"><Sparkles className="size-7" aria-hidden="true" /></span>
+          <h1 className="mt-6 font-display text-3xl font-semibold tracking-tight text-[#713b2b]">Analyzing screenshot...</h1>
           <p className="mt-2 text-muted-foreground">AI Inbox is turning your screenshot into structured information.</p>
         </div>
-        <div className="mt-8 flex h-24 items-center gap-4 rounded-xl border bg-slate-50/50 px-5 opacity-60 blur-[1px]">
-          <span className="grid size-14 place-items-center rounded-lg bg-blue-50 text-primary"><span className="text-xs font-medium capitalize">{analysis?.result.intent ?? "Analyzing"}</span></span><div><p className="font-medium">{analysis?.result.title ?? "Reading screenshot"}</p><p className="mt-2 text-xs text-muted-foreground">Preparing grounded fields and suggested actions</p></div>
+        <div className="mt-8 flex h-24 items-center gap-4 rounded-2xl border border-[#e7d8ca] bg-[#fbf4eb] px-5 opacity-70 blur-[1px]">
+          <span className="grid size-14 place-items-center rounded-xl bg-[#f2ded1] text-primary"><span className="text-xs font-medium capitalize">{analysis?.result.intent ?? "Analyzing"}</span></span><div><p className="font-medium">{analysis?.result.title ?? "Reading screenshot"}</p><p className="mt-2 text-xs text-muted-foreground">Preparing grounded fields and suggested actions</p></div>
         </div>
         <div className="mt-8 space-y-0 pl-4">
           <ProcessStep label="Understanding content" detail="Reading visible details and context" index={0} stage={processingStage} />
@@ -78,7 +81,7 @@ function AnalysisResultCard({ analysis }: { analysis: AnalyzeApiResponse | null 
 
   const { result } = analysis;
   if (result.confidence < LOW_CONFIDENCE_THRESHOLD) {
-    return <div className="py-2"><Link className="inline-flex items-center gap-2 text-slate-600 hover:text-primary" href="/inbox"><ArrowLeft className="size-5" />Back to Inbox</Link><LowConfidenceResult inboxItemId={analysis.id} intent={result.intent} /></div>;
+    return <div className="py-2"><Link className="inline-flex items-center gap-2 text-[#6d5b51] hover:text-primary" href="/inbox"><ArrowLeft className="size-5" />Back to Inbox</Link><LowConfidenceResult imagePath={analysis.imagePath} inboxItemId={analysis.id} intent={result.intent} title={result.title ?? "Unclear screenshot"} /></div>;
   }
   const suggestedActions = mapSuggestedActions(result.intent, result.actions, {
     fields: result.fields,
@@ -93,25 +96,27 @@ function AnalysisResultCard({ analysis }: { analysis: AnalyzeApiResponse | null 
     summary: result.summary,
     fields: result.fields,
   });
+  const showVisual = shouldShowItemVisual({ imagePath: analysis.imagePath, intent: result.intent, title: result.title ?? "Untitled screenshot", supportingText: result.summary });
   return (
     <div className="py-2">
-      <Link className="inline-flex items-center gap-2 text-slate-600 hover:text-primary" href="/inbox"><ArrowLeft className="size-5" />Back to Inbox</Link>
-      <section className="mt-6 rounded-xl border bg-white p-8 shadow-card">
+      <Link className="inline-flex items-center gap-2 text-[#6d5b51] hover:text-primary" href="/inbox"><ArrowLeft className="size-5" />Back to Inbox</Link>
+      <section className="mt-6 rounded-[1.75rem] border border-[#e5d3c2] bg-card/95 p-6 shadow-card sm:p-8">
+        {showVisual ? <ItemVisual className="mb-8" imagePath={analysis.imagePath} intent={result.intent} title={result.title ?? "Untitled screenshot"} variant="hero" /> : null}
         <div className="flex items-center justify-between gap-5">
-          <span className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 font-medium capitalize text-primary">{result.intent}</span>
-          <span className="rounded-lg border px-4 py-2 text-sm text-slate-600">Confidence guidance: {result.confidence}/100</span>
+          <IntentBadge compact intent={intentLabel(result.intent)} />
+          <span className="rounded-full border border-[#dfd0c2] bg-[#fffdf8] px-4 py-2 text-sm text-[#6d5b51]">Confidence guidance: {result.confidence}/100</span>
         </div>
-        <h1 className="mt-7 text-3xl font-semibold tracking-[-0.03em]">{result.title ?? "Untitled screenshot"}</h1>
-        <p className="mt-3 leading-7 text-slate-600">{result.summary ?? "No summary could be extracted without guessing."}</p>
+        <h1 className="mt-7 font-display text-4xl font-semibold tracking-[-0.03em] text-[#643929]">{result.title ?? "Untitled screenshot"}</h1>
+        <p className="mt-3 max-w-3xl leading-7 text-[#66564d]">{result.summary ?? "No summary could be extracted without guessing."}</p>
 
-        <h2 className="mt-8 text-lg font-semibold">Extracted information</h2>
-        <div className="mt-4 overflow-hidden rounded-xl border">
-          {result.fields.map((field) => <div key={field.key} className="grid grid-cols-[180px_1fr] border-b px-5 py-4 last:border-b-0"><span className="text-sm text-muted-foreground">{field.label}</span><span className={field.value === null ? "text-slate-400" : "font-medium"}>{field.value ?? "Not found"}</span></div>)}
+        <h2 className="mt-9 font-display text-2xl font-semibold text-[#633d30]">What was saved</h2>
+        <div className="mt-4 overflow-hidden rounded-2xl border border-[#e7d7c7] bg-[#fffdf8]">
+          {result.fields.map((field) => <div key={field.key} className="grid grid-cols-[minmax(120px,180px)_1fr] border-b border-[#eadccf] px-5 py-4 last:border-b-0"><span className="text-sm text-muted-foreground">{field.label}</span><span className={field.value === null ? "text-[#a6978f]" : "font-medium text-[#47372f]"}>{field.value ?? "Not found"}</span></div>)}
         </div>
 
         <ExplainabilitySection intent={result.intent} title={result.title} summary={result.summary} fields={result.fields} />
 
-        <h2 className="mt-8 text-lg font-semibold">Suggested actions</h2>
+        <h2 className="mt-9 font-display text-2xl font-semibold text-[#633d30]">Suggested actions</h2>
         <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {supportsSave ? <SaveButton inboxItemId={analysis.id} showDescription /> : null}
           {suggestedActions.map((action) => <SuggestedActionButton key={action.id} action={action} />)}

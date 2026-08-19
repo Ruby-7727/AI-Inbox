@@ -1,6 +1,5 @@
-import { Clipboard, Search } from "lucide-react";
+import { Clipboard, Flower2, Heart } from "lucide-react";
 
-import { UploadButton } from "@/components/actions/upload-button";
 import { Header } from "@/components/layout/header";
 import { InboxContent } from "@/components/inbox/inbox-content";
 
@@ -8,23 +7,15 @@ export const metadata = { title: "Inbox" };
 
 export default function InboxPage() {
   return (
-    <>
-      <Header title="Inbox" description="Turn screenshots into actions." actions={
-        <>
-          <label className="hidden h-12 w-72 items-center gap-3 rounded-lg border bg-white px-4 text-sm text-muted-foreground lg:flex">
-            <Search className="size-5" />
-            <input className="min-w-0 flex-1 bg-transparent outline-none" placeholder="Search inbox..." />
-          </label>
-          <UploadButton />
-        </>
+    <div className="mx-auto max-w-[1180px]">
+      <Header title="Welcome back" description="Your ideas, plans, and inspo — all in one cozy place." actions={
+        <div className="relative flex flex-wrap items-center gap-3 pr-12">
+          <div className="hidden h-12 items-center gap-3 rounded-2xl border border-[#dec9b6] bg-[#fffdf8]/90 px-5 text-sm text-[#725b4e] shadow-sm lg:flex"><Clipboard className="size-4.5 text-primary" />Paste with ⌘V / Ctrl+V</div>
+          <Flower2 className="absolute -right-2 -top-7 size-12 rotate-12 text-[#bf7656]" strokeWidth={1.35} />
+          <Heart className="absolute -right-1 bottom-0 size-4 rotate-12 fill-[#f4ddd2] text-[#bf7656]" />
+        </div>
       } />
-
-      <button className="mt-10 flex h-15 w-full items-center gap-3 rounded-xl border border-blue-200 bg-blue-50/25 px-5 text-left text-sm text-muted-foreground hover:bg-blue-50/60" type="button">
-        <Clipboard className="size-5 text-primary" />
-        Paste a screenshot with ⌘V / Ctrl+V
-      </button>
-
       <InboxContent />
-    </>
+    </div>
   );
 }

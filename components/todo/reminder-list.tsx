@@ -42,7 +42,7 @@ export function ReminderList() {
   const completed = reminders?.filter((reminder) => reminder.status === "completed") ?? [];
 
   return (
-    <div className="mt-10">
+    <div className="mt-8">
       {error ? <div className="mb-6 flex items-center gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700" role="alert"><AlertCircle className="size-5 shrink-0" />{error}</div> : null}
       <ReminderSection emptyMessage="No upcoming reminders." reminders={pending} title="Upcoming" updatingId={updatingId} onStatusChange={changeStatus} />
       <ReminderSection emptyMessage="No completed reminders yet." reminders={completed} title="Completed" updatingId={updatingId} onStatusChange={changeStatus} />
@@ -53,13 +53,13 @@ export function ReminderList() {
 function ReminderSection({ title, emptyMessage, reminders, updatingId, onStatusChange }: { title: string; emptyMessage: string; reminders: ReminderRow[]; updatingId: string | null; onStatusChange: (id: string, status: ReminderStatus) => void }) {
   return (
     <section className="mt-9 first:mt-0">
-      <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>
-      <div className="mt-5 divide-y overflow-hidden rounded-xl border bg-white shadow-card">
+      <h2 className="font-display text-3xl font-semibold tracking-tight text-[#684334]">{title}</h2>
+      <div className="mt-5 divide-y divide-[#eadccf] overflow-hidden rounded-[1.4rem] border border-[#e5d3c2] bg-card/90 shadow-card">
         {reminders.length ? reminders.map((reminder) => (
           <ReminderCard key={reminder.id} reminder={reminder} updating={updatingId === reminder.id} onStatusChange={onStatusChange} />
         )) : (
           <div className="grid min-h-36 place-items-center px-6 py-8 text-center">
-            <div><CalendarClock className="mx-auto size-7 text-slate-300" aria-hidden="true" /><p className="mt-3 text-sm text-muted-foreground">{emptyMessage}</p></div>
+            <div><CalendarClock className="mx-auto size-7 text-[#cbb8aa]" aria-hidden="true" /><p className="mt-3 text-sm text-muted-foreground">{emptyMessage}</p></div>
           </div>
         )}
       </div>

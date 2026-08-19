@@ -24,6 +24,14 @@ const actionIcons: Record<ActionIconIdentifier, LucideIcon> = {
   chart: ChartNoAxesColumnIncreasing,
 };
 
+const loadingLabels: Record<AIAction["type"], string> = {
+  map: "Opening...",
+  calendar: "Adding...",
+  reminder: "Setting...",
+  research: "Researching...",
+  compare: "Comparing...",
+};
+
 type ActionUiState = "idle" | "confirming" | "executing" | "completed" | "failed";
 
 export function SuggestedActionButton({ action: initialAction }: { action: AIAction }) {
@@ -124,7 +132,7 @@ export function SuggestedActionButton({ action: initialAction }: { action: AIAct
       >
         {state === "executing" ? <LoaderCircle className="size-4.5 shrink-0 animate-spin" aria-hidden="true" /> : <Icon className="size-4.5 shrink-0" strokeWidth={1.8} aria-hidden="true" />}
         <span>
-          <span className="block">{state === "executing" ? action.type === "research" ? "Researching your screenshot..." : "Working..." : action.title}</span>
+          <span className="block">{state === "executing" ? loadingLabels[action.type] : action.title.trim() || "Continue"}</span>
           <span className="mt-1 block text-xs font-normal opacity-80">{action.description}</span>
         </span>
       </Button>

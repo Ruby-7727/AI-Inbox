@@ -31,13 +31,13 @@ export function UploadModal({ open, onOpenChange }: { open: boolean; onOpenChang
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-slate-900/24 p-5 backdrop-blur-[3px]" role="dialog" aria-modal="true" aria-labelledby="upload-title">
+    <div className="fixed inset-0 z-50 grid place-items-center bg-[#4a3329]/28 p-5 backdrop-blur-[4px]" role="dialog" aria-modal="true" aria-labelledby="upload-title">
       <button className="absolute inset-0 cursor-default" aria-label="Close upload dialog" onClick={() => onOpenChange(false)} />
-      <div className="relative z-10 w-full max-w-[510px] overflow-hidden rounded-xl border bg-white shadow-[0_24px_80px_rgb(15_23_42_/_0.2)]">
+      <div className="relative z-10 w-full max-w-[530px] overflow-hidden rounded-[1.75rem] border border-[#dfc8b4] bg-[#fffaf3] shadow-[0_28px_90px_rgb(74_51_41_/_0.24)]">
         <div className="px-8 pt-8">
           <div className="flex items-start justify-between">
             <div>
-              <h2 id="upload-title" className="text-xl font-semibold">Upload Screenshot</h2>
+              <h2 id="upload-title" className="font-display text-3xl font-semibold text-[#713b2b]">Upload Screenshot</h2>
               <p className="mt-1 text-sm text-muted-foreground">Let AI Inbox understand what you saved.</p>
             </div>
             <button className="rounded-lg p-1.5 text-slate-500 hover:bg-muted" onClick={() => onOpenChange(false)} type="button" aria-label="Close">

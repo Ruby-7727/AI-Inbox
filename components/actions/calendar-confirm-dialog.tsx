@@ -32,19 +32,19 @@ export function CalendarConfirmDialog({ action, open, onCancel, onConfirm }: Cal
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-slate-950/35 p-6 backdrop-blur-[2px]">
+    <div className="fixed inset-0 z-50 grid place-items-center bg-[#4a3329]/32 p-6 backdrop-blur-[3px]">
       <form
         aria-labelledby="calendar-confirm-title"
         aria-modal="true"
-        className="w-full max-w-lg rounded-xl border bg-white p-6 shadow-2xl"
+        className="w-full max-w-lg rounded-[1.5rem] border border-[#dfc8b4] bg-[#fffaf3] p-6 shadow-[0_24px_70px_rgb(74_51_41_/_0.22)]"
         onSubmit={(event) => {
           event.preventDefault();
           onConfirm(needsTime ? time : undefined);
         }}
         role="dialog"
       >
-        <h2 className="text-xl font-semibold tracking-[-0.02em]" id="calendar-confirm-title">Add to calendar</h2>
-        <dl className="mt-5 overflow-hidden rounded-xl border bg-slate-50/60">
+        <h2 className="font-display text-2xl font-semibold tracking-[-0.02em] text-[#713b2b]" id="calendar-confirm-title">Add to calendar</h2>
+        <dl className="mt-5 overflow-hidden rounded-xl border border-[#e4d1c0] bg-[#fffaf4]">
           <CalendarField label="Event" value={action.eventTitle?.trim() || "Untitled event"} />
           <CalendarField icon={CalendarDays} label="Date" value={formatCalendarDate(action) || "Not determined"} />
           {action.isAllDay ? <CalendarField label="All-day" value="Yes" /> : needsTime ? (
@@ -52,7 +52,7 @@ export function CalendarConfirmDialog({ action, open, onCancel, onConfirm }: Cal
               <dt className="flex items-center gap-2 text-sm font-medium text-slate-600"><Clock3 className="size-4 text-primary" />Start time</dt>
               <dd>
                 <input
-                  className="h-10 w-full rounded-lg border bg-white px-3 text-base outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  className="h-10 w-full rounded-xl border border-[#dcc7b5] bg-[#fffdf8] px-3 text-base outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
                   onChange={(event) => setTime(event.target.value)}
                   ref={timeInputRef}
                   required

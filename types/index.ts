@@ -39,4 +39,5 @@ export type InboxItem = {
   detail?: string;
   isNew?: boolean;
   actions: ItemAction[];
+  imagePath?: string | null;
 };

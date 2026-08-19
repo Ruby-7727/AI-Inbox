@@ -4,10 +4,10 @@ import type { ResearchResult as ResearchResultData } from "@/types/research";
 
 export function ResearchResult({ result }: { result: ResearchResultData }) {
   return (
-    <article className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white text-slate-800 shadow-sm" aria-labelledby="research-report-title">
-      <header className="border-b bg-slate-50/70 px-5 py-4">
+    <article className="mt-4 overflow-hidden rounded-2xl border border-[#e4d1c0] bg-[#fffdf8] text-[#47372f] shadow-sm" aria-labelledby="research-report-title">
+      <header className="border-b border-[#eadccf] bg-[#f8eee5] px-5 py-4">
         <div className="flex items-start gap-3">
-          <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-lg bg-blue-50 text-primary">
+          <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-xl bg-[#f2ded1] text-primary">
             <SearchCheck className="size-4.5" aria-hidden="true" />
           </span>
           <div className="min-w-0">
@@ -57,7 +57,7 @@ export function ResearchResult({ result }: { result: ResearchResultData }) {
         ) : null}
       </div>
 
-      <footer className="border-t bg-slate-50/60 px-5 py-3 text-xs leading-5 text-muted-foreground">
+      <footer className="border-t border-[#eadccf] bg-[#f8eee5] px-5 py-3 text-xs leading-5 text-muted-foreground">
         Based on the information in your screenshot. No live web data was used.
       </footer>
     </article>
