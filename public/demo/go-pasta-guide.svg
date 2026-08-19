@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" role="img" aria-labelledby="title description">
+  <title id="title">Beijing pasta restaurant guide</title>
+  <desc id="description">A warm editorial table scene with pasta, a city map, and restaurant notes.</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f5e9dc"/><stop offset="1" stop-color="#d9c0a8"/></linearGradient>
+    <radialGradient id="plate"><stop stop-color="#fffdf5"/><stop offset=".78" stop-color="#eee3d1"/><stop offset="1" stop-color="#b58d6c"/></radialGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#5b3825" flood-opacity=".22"/></filter>
+  </defs>
+  <rect width="800" height="520" fill="url(#paper)"/>
+  <path d="M0 352c151-46 286-37 414 8 117 41 238 29 386-35v195H0z" fill="#8b6046" opacity=".22"/>
+  <g filter="url(#shadow)">
+    <circle cx="302" cy="272" r="177" fill="url(#plate)"/>
+    <circle cx="302" cy="272" r="132" fill="#c86f3d"/>
+    <g fill="none" stroke="#f2c06c" stroke-width="16" stroke-linecap="round">
+      <path d="M191 235c71-67 177 65 239-15M180 281c69-72 181 59 243-12M196 326c76-61 153 45 214-9"/>
+      <path d="M220 199c21 70 128 56 156 126M245 178c-15 99 137 93 125 169"/>
+    </g>
+    <g fill="#6c7f43"><ellipse cx="220" cy="224" rx="19" ry="10" transform="rotate(-25 220 224)"/><ellipse cx="366" cy="296" rx="19" ry="10" transform="rotate(34 366 296)"/><ellipse cx="314" cy="205" rx="17" ry="9"/></g>
+  </g>
+  <g transform="translate(525 88) rotate(3)" filter="url(#shadow)">
+    <rect width="214" height="330" rx="12" fill="#fffaf0"/>
+    <path d="M32 55h150M32 90h118M32 212h150M32 247h126" stroke="#d8c1a9" stroke-width="3"/>
+    <path d="M52 136c33-27 61 9 92-16 24-19 35 2 50-10M47 173c25-15 44 10 69-3 21-12 38 4 61-13" fill="none" stroke="#ad7858" stroke-width="6" stroke-linecap="round"/>
+    <g fill="#7d5c48" font-family="Arial, sans-serif"><text x="31" y="40" font-size="20" font-weight="700">BEIJING PASTA</text><text x="31" y="289" font-size="17">turbo · yum yummy</text><text x="31" y="316" font-size="17">Papa Danilo</text></g>
+  </g>
+</svg>

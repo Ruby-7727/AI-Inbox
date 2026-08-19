@@ -1,9 +1,8 @@
 const demoVisuals: Record<string, string> = {
-  "ChangYuan 毛毯照片墙": "/demo/shop-photo-wall.svg",
-  "北京咖啡地图": "/demo/go-coffee-map.svg",
   "2026 广州超级草莓音乐节": "/demo/attend-festival.svg",
-  "面试准备提醒": "/demo/do-interview.svg",
-  "女性文学书单": "/demo/remember-books.svg",
+  "北京意面封神榜": "/demo/go-pasta-guide.svg",
+  "ELLE 行李箱": "/demo/shop-elle-luggage.svg",
+  "女性书单 | 女孩保持阅读": "/demo/remember-books.svg",
 };
 
 export function getDemoVisual(title: string) {

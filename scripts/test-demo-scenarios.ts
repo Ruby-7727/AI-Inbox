@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 
 import { DEMO_INBOX_SCENARIOS } from "../lib/demo/inbox-scenarios";
+import { getDemoVisual, shouldShowItemVisual } from "../lib/demo/visuals";
 import { getDetectedSignals } from "../lib/analysis/explainability";
 import { inboxRowToCard } from "../lib/supabase/presenters";
 import { savedCategoryForIntent } from "../lib/supabase/savedCategories";
@@ -23,6 +24,13 @@ const expectedSignals = {
 };
 
 assert.equal(DEMO_INBOX_SCENARIOS.length, 5);
+assert.deepEqual(DEMO_INBOX_SCENARIOS.map(({ title }) => title), [
+  "2026 广州超级草莓音乐节",
+  "面试准备提醒",
+  "北京意面封神榜",
+  "ELLE 行李箱",
+  "女性书单 | 女孩保持阅读",
+]);
 for (const [index, { key, ...scenario }] of DEMO_INBOX_SCENARIOS.entries()) {
   const timestamp = new Date(Date.UTC(2026, 7, 18, 12, index)).toISOString();
   const row: InboxItemRow = {
@@ -45,6 +53,8 @@ for (const [index, { key, ...scenario }] of DEMO_INBOX_SCENARIOS.entries()) {
     summary: row.summary,
     fields: row.structured_data.fields,
   }).includes(expectedSignals[key]));
+  assert.equal(shouldShowItemVisual({ intent: row.intent, title: row.title, supportingText: row.summary }), key !== "do");
+  if (key !== "do") assert.ok(getDemoVisual(row.title));
 }
 
 assert.equal(savedCategoryForIntent("shop"), "product");

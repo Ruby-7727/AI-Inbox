@@ -6,46 +6,16 @@ export type DemoInboxScenario = Omit<InboxItemInsert, "id" | "user_id" | "create
 
 export const DEMO_INBOX_SCENARIOS: readonly DemoInboxScenario[] = [
   {
-    key: "shop",
-    intent: "shop",
-    title: "ChangYuan 毛毯照片墙",
-    summary: "一款适合作为照片墙背景的装饰毛毯产品推荐。",
-    confidence: 91,
-    structured_data: {
-      fields: [
-        { key: "product", label: "Product", value: "ChangYuan 毛毯照片墙" },
-        { key: "category", label: "Category", value: "家居装饰" },
-        { key: "use_case", label: "Use", value: "照片墙背景" },
-      ],
-      actions: ["save", "research"],
-    },
-  },
-  {
-    key: "go",
-    intent: "go",
-    title: "北京咖啡地图",
-    summary: "一份小红书风格的北京咖啡店推荐清单，适合安排探店路线。",
-    confidence: 94,
-    structured_data: {
-      fields: [
-        { key: "location", label: "Location", value: "北京" },
-        { key: "recommended_cafes", label: "Recommended cafés", value: "胡同咖啡、亮马桥咖啡、国贸咖啡" },
-        { key: "content_type", label: "Content", value: "咖啡店推荐清单" },
-      ],
-      actions: ["navigate", "research", "save"],
-    },
-  },
-  {
     key: "attend",
     intent: "attend",
     title: "2026 广州超级草莓音乐节",
-    summary: "2026 年 9 月 25 日至 27 日在南沙音乐秀场举行的音乐节。",
+    summary: "广州超级草莓音乐节活动信息，包括时间、地点和活动安排。",
     confidence: 96,
     structured_data: {
       fields: [
-        { key: "start_date", label: "Start date", value: "9月25日" },
-        { key: "end_date", label: "End date", value: "9月27日" },
-        { key: "venue", label: "Venue", value: "南沙音乐秀场" },
+        { key: "start_date", label: "Start date", value: "2026年9月25日" },
+        { key: "end_date", label: "End date", value: "2026年9月27日" },
+        { key: "venue", label: "Location", value: "长隆度假区音乐节广场" },
       ],
       actions: ["add_calendar"],
     },
@@ -54,30 +24,59 @@ export const DEMO_INBOX_SCENARIOS: readonly DemoInboxScenario[] = [
     key: "do",
     intent: "do",
     title: "面试准备提醒",
-    summary: "在面试前完成岗位研究、案例复盘和自我介绍练习。",
+    summary: "准备即将到来的产品运营面试。",
     confidence: 92,
     structured_data: {
       fields: [
-        { key: "task", label: "Task", value: "准备面试" },
-        { key: "remind_at", label: "Reminder time", value: "2026-08-20T09:00:00+08:00" },
-        { key: "checklist", label: "Checklist", value: "岗位研究、案例复盘、自我介绍" },
+        { key: "date", label: "Date", value: "2026年8月20日" },
+        { key: "checklist", label: "Checklist", value: "✓ 了解公司背景 · ✓ 准备项目案例 · ✓ 整理面试问题" },
       ],
       actions: ["remind"],
     },
   },
   {
+    key: "go",
+    intent: "go",
+    title: "北京意面封神榜",
+    summary: "北京值得收藏的意面餐厅推荐。",
+    confidence: 94,
+    structured_data: {
+      fields: [
+        { key: "location", label: "Location", value: "北京" },
+        { key: "places", label: "Places", value: "turbo · yum yummy · Papa Danilo" },
+        { key: "content_type", label: "Content", value: "意面餐厅推荐" },
+      ],
+      actions: ["navigate", "research", "save"],
+    },
+  },
+  {
+    key: "shop",
+    intent: "shop",
+    title: "ELLE 行李箱",
+    summary: "适合商务旅行使用的小型登机箱。",
+    confidence: 91,
+    structured_data: {
+      fields: [
+        { key: "product", label: "Product", value: "ELLE 行李箱" },
+        { key: "description", label: "Description", value: "商务旅行小型登机箱" },
+        { key: "price", label: "Price", value: "¥242.76 起" },
+      ],
+      actions: ["save", "research"],
+    },
+  },
+  {
     key: "remember",
     intent: "remember",
-    title: "女性文学书单",
-    summary: "一份值得保存和进一步研究的女性文学阅读清单。",
+    title: "女性书单 | 女孩保持阅读",
+    summary: "收藏的女性成长与阅读书单。",
     confidence: 93,
     structured_data: {
       fields: [
-        { key: "topic", label: "Topic", value: "女性文学" },
-        { key: "books", label: "Books", value: "《房思琪的初恋乐园》《使女的故事》《第二性》" },
+        { key: "topic", label: "Topic", value: "女性成长与阅读" },
+        { key: "books", label: "Books", value: "《岛屿书》 · 《离开的季节》 · 《熊从山那边来》 · 《四十个房间》" },
         { key: "content_type", label: "Content", value: "阅读书单" },
       ],
-      actions: ["save", "summarize"],
+      actions: ["save", "research"],
     },
   },
 ];
