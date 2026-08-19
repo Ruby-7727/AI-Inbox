@@ -1,77 +1,198 @@
 # AI Inbox
 
-AI Inbox is an AI Product Manager portfolio prototype that turns screenshots into structured items and suggested actions.
+<!-- markdownlint-disable MD013 -->
 
-This repository contains a clickable prototype with screenshot selection, preview, validation, upload progress, structured Zhipu AI vision analysis, invisible Supabase anonymous authentication, and per-user persistence.
+**Turn screenshots into useful actions.**
 
-## Product scope
+AI Inbox is an AI-powered screenshot organization assistant. It understands saved screenshots, extracts meaningful information, classifies user intent, and turns passive screenshots into actionable workflows.
 
-The reference screens define one primary journey:
+Designed as an AI Product Manager portfolio project, the prototype explores how multimodal AI can transform an everyday behavior—taking screenshots—into a calm, useful personal organization experience.
 
-1. A user uploads, drops, or pastes a screenshot.
-2. AI Inbox shows a stable multi-step processing state.
-3. The result is classified as an event, product, place, task, or knowledge item.
-4. High-confidence results expose suggested actions immediately.
-5. Low-confidence or incomplete fields require confirmation before an action.
-6. Items remain discoverable through Inbox, Saved, To Do, and semantic Search views.
+---
 
-The first implementation should optimize this happy path and its recovery states before adding integrations or advanced customization.
+## Problem
 
-## Application architecture
+People save hundreds of screenshots:
 
-- **Next.js App Router** owns pages, layouts, server rendering, and API routes.
-- **UI modules** are split into layout, inbox, cards, actions, and shadcn-style primitives.
-- **Supabase** owns anonymous users, RLS-protected PostgreSQL records, and private screenshot storage.
-- **Zhipu AI GLM-4.5V** is called only from server-side API routes; credentials never enter the browser bundle.
-- **Vercel** will host the single Next.js application. Processing should remain request-based and lightweight enough for free-tier limits.
+- Travel ideas
+- Products they may want to buy
+- Events and bookings
+- Tasks and reminders
+- Notes, recommendations, and reading lists
 
-Suggested data flow:
+But screenshots quickly become a forgotten information graveyard. They are difficult to search, disconnected from the user’s next step, and rarely revisited when they would be useful.
 
-`browser upload -> Zhipu analysis route -> private Supabase screenshot + RLS row -> review/detail screen`
+---
 
-## Route map
+## Solution
 
-- `/inbox` — recent recognized items and empty state
-- `/saved` — saved products, places, and knowledge
-- `/todo` — tasks and events grouped by status/time
-- `/search` — semantic retrieval across recognized content
-- `/analyze` — upload processing, result review, and confidence handling
-- `/api/analyze` — validates screenshot uploads and returns a runtime-validated GLM-4.5V analysis
+AI Inbox transforms screenshots into structured personal knowledge.
 
-## Module boundaries
+It combines screenshot understanding with an intent-based action layer to:
 
-- `components/ui` — generic shadcn-style primitives
-- `components/layout` — application shell and navigation
-- `components/inbox` — inbox-only compositions
-- `components/cards` — reusable recognized-item cards
-- `components/actions` — suggested-action controls
-- `lib/supabase` — browser/server clients and repositories
-- `lib/ai` — prompts, schemas, and server-only analysis orchestration
-- `types` — shared domain contracts
+- Understand screenshot content with Vision AI
+- Classify the user’s likely intent automatically
+- Extract useful, grounded information
+- Explain how the content was organized
+- Recommend relevant next actions while keeping the user in control
 
-## Design foundation
+---
 
-The global tokens follow the supplied prototypes: bright blue primary actions, cool near-white canvas, white cards, blue-gray borders, restrained shadows, rounded 12px surfaces, and high-contrast neutral typography. Tokens are defined in `app/globals.css` and exposed to Tailwind utilities.
+## User Journey
 
-## Local setup
+1. **Capture** — The user uploads or pastes a screenshot they want to keep.
+2. **Understand** — Vision AI identifies the content, extracts grounded details, and selects one primary intent.
+3. **Review** — The user sees the organized result, supporting signals, and any missing information.
+4. **Act** — AI Inbox suggests a small set of relevant actions such as saving a place, creating a reminder, or adding an event.
+5. **Revisit** — The item remains available in the user’s Inbox, Saved archive, or To Do list.
+
+The experience is designed to turn a familiar, low-effort behavior into an organized and reusable personal memory system.
+
+---
+
+## Product Demo
+
+> **Demo GIF coming soon**
+
+The core experience follows one clear flow:
+
+```text
+Upload screenshot
+        ↓
+AI understanding
+        ↓
+Intent classification
+        ↓
+Action suggestion
+```
+
+The portfolio demo includes five representative scenarios: an event, a task, a place recommendation, a product, and a reading list.
+
+---
+
+## Key Features
+
+### AI Screenshot Understanding
+
+Vision AI analyzes screenshots directly and extracts the visible context without requiring a separate OCR workflow.
+
+### Smart Intent Classification
+
+AI Inbox organizes content around what the user may want to do next:
+
+- **Attend** — events, appointments, and scheduled activities
+- **Do** — tasks and reminders
+- **Go** — restaurants, destinations, and places
+- **Shop** — products to save, compare, or research
+- **Remember** — notes, recommendations, and useful knowledge
+
+### Explainable AI
+
+Each result highlights the signals that informed its category, helping the user understand and review the AI’s interpretation without exposing raw model reasoning.
+
+### Action Layer
+
+AI Inbox turns recognized information into useful next steps:
+
+- Add Calendar
+- Set Reminder
+- Open Map
+- Research Product or Trip
+- Save for later
+
+Actions are suggested—not automatically executed—so the user remains in control.
+
+### Persistent Personal Archive
+
+Screenshots and structured results remain available across Inbox, Saved, and To Do views through an anonymous, user-isolated Supabase session.
+
+---
+
+## Product Decisions
+
+- **Organize by intent, not source app.** A restaurant recommendation is categorized as **Go** whether it came from Xiaohongshu, WeChat, or a browser.
+- **Choose one primary intent.** A clear category reduces cognitive load and makes the next action easier to understand.
+- **Prefer missing data over invented data.** Unknown dates, prices, or addresses remain empty until the user confirms them.
+- **Treat confidence as guidance.** Uncertainty changes the review experience; it is not presented as a precise probability.
+- **Suggest before executing.** Calendar, reminder, map, and research actions remain under user control.
+- **Keep the first experience frictionless.** Anonymous authentication creates an isolated personal workspace without introducing a login screen.
+
+---
+
+## Architecture
+
+```mermaid
+flowchart LR
+    A[User Screenshot]
+
+    subgraph Intelligence[AI Understanding]
+        B[Multimodal Analysis]
+        C[Grounded Extraction]
+        D[Primary Intent]
+    end
+
+    subgraph Trust[Trust and Review]
+        E[Runtime Validation]
+        F[Explainability and Uncertainty]
+    end
+
+    subgraph Utility[Action Layer]
+        G[Action Recommendations]
+        H[User Confirmation]
+    end
+
+    subgraph Memory[Personal Archive]
+        I[Inbox / Saved / To Do]
+    end
+
+    A --> B --> C --> D --> E --> F --> G --> H --> I
+```
+
+The product separates AI understanding from user-facing actions. Model output is normalized into a provider-independent contract, validated before display, and reviewed by the user before an external action is triggered.
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+| --- | --- |
+| Frontend | Next.js App Router, TypeScript, Tailwind CSS, shadcn/ui |
+| Backend | Next.js API Routes |
+| Database | Supabase PostgreSQL |
+| Storage | Supabase Storage |
+| Authentication | Supabase Anonymous Auth |
+| AI | Zhipu GLM-4.5V Vision API |
+| Deployment | Vercel |
+
+---
+
+## Design Philosophy
+
+AI Inbox focuses on:
+
+- **Calm personal organization** — a warm visual archive instead of a technical AI dashboard
+- **Explainable AI** — clear category signals and uncertainty handling
+- **Action-oriented workflows** — helping users move from saved information to a useful next step
+- **User control** — confirmation before meaningful actions are executed
+- **Reduced information overload** — organizing screenshots by intent rather than source application
+
+---
+
+## Future Improvements
+
+- Better OCR and mixed-layout extraction
+- Personalized AI suggestions based on user behavior
+- Cross-platform screenshot sync
+- Native calendar and productivity integrations
+- Live web research with clear source attribution
+
+---
+
+## Running Locally
 
 ```bash
 pnpm install
 pnpm dev
 ```
 
-Copy `.env.example` to `.env.local` and set `ZHIPU_API_KEY` before analyzing screenshots. The active model is `glm-4.5v`.
-
-For persistence, also set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, enable Anonymous Sign-Ins, and run the SQL described in `supabase/README.md`.
-
-Verify the response contract without making API calls:
-
-```bash
-pnpm test:analysis-contract
-```
-
-To run the five-category live Vision evaluation, add the screenshots described in `tests/fixtures/README.md`, start the app with the API key configured, and run:
-
-```bash
-pnpm test:ai
-```
+Environment variable names and Supabase setup instructions are documented in `.env.example` and `supabase/README.md`. Secret values are never committed to the repository.
