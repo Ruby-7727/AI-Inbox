@@ -2,6 +2,7 @@ import type { LucideIcon } from "lucide-react";
 import { Bell, Bookmark, CalendarDays, ChartNoAxesColumnIncreasing, MapPin, Search } from "lucide-react";
 
 import { mapSuggestedActions } from "@/lib/actions/mapper";
+import { isUserExecutableAction } from "@/lib/actions/capabilities";
 import { isPlaceRecommendation } from "@/lib/actions/place-recommendation";
 import type { ActionType } from "@/lib/actions/types";
 import type { InboxItem } from "@/types";
@@ -24,7 +25,7 @@ export function inboxRowToCard(item: InboxItemRow): InboxItem {
     itemTitle: item.title,
     itemDescription: item.summary,
     inboxItemId: item.id,
-  }).map((action) => ({
+  }).filter(isUserExecutableAction).map((action) => ({
     label: action.title,
     icon: actionIcons[action.type],
     actionType: action.type,
@@ -57,7 +58,7 @@ export function inboxRowToCard(item: InboxItemRow): InboxItem {
     id: item.id,
     intent: intentLabel(item.intent),
     title: item.title,
-    meta: visibleFields.slice(0, 2).map((field) => field.value).join("  ·  ") || item.summary || "Analyzed screenshot",
+    meta: visibleFields.slice(0, 2).map((field) => field.value).join("  ·  ") || item.summary || "Saved from your screenshot",
     detail: visibleFields[2]?.value ?? undefined,
     isNew: item.status === "new",
     actions: [

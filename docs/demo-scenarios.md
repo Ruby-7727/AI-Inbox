@@ -1,26 +1,12 @@
 # AI Inbox portfolio demo scenarios
 
-AI Inbox includes an explicit demo mode for a clean interview walkthrough. Set
-`NEXT_PUBLIC_AI_INBOX_DEMO_MODE=true` in `.env.local` and open the app with a
-fresh anonymous browser session. If that session's Inbox is empty, the app adds
-the five rows below through the normal Supabase client and RLS policies.
+AI Inbox includes an explicit demo mode for a clean interview walkthrough. Open
+`/inbox?demo=1` with a fresh anonymous browser session. The normal public Inbox
+does not load sample content. In Demo mode, the app prepares the five rows below
+through the normal Supabase client and RLS policies.
 
-Demo mode never deletes or resets existing data. It does not seed a non-empty
-Inbox, which prevents duplicate scenarios and preserves the user's records.
-
-## Shop — ChangYuan 毛毯照片墙
-
-- Screenshot: Product recommendation
-- AI intent: Shop
-- Expected actions: Save, Research Product
-- Expected Saved category: Products
-
-## Go — 北京咖啡地图
-
-- Screenshot: Xiaohongshu-style coffee shop recommendation list
-- AI intent: Go
-- Expected actions: Open Map, Research Trip, Save Place
-- Expected Saved category: Places
+Demo mode never deletes or resets existing data. Recognized legacy Demo rows are
+updated in place, while genuine uploaded screenshots remain untouched.
 
 ## Attend — 2026 广州超级草莓音乐节
 
@@ -31,12 +17,26 @@ Inbox, which prevents duplicate scenarios and preserves the user's records.
 
 ## Do — 面试准备提醒
 
-- Screenshot: Interview preparation task with a reminder time
+- Screenshot: Interview preparation checklist with a date
 - AI intent: Do
 - Expected actions: Remind Me
 - Expected Saved category: Not applicable
 
-## Remember — 女性文学书单
+## Go — 北京意面封神榜
+
+- Screenshot: Restaurant recommendation list
+- AI intent: Go
+- Expected actions: Open Map, Research Trip, Save Place
+- Expected Saved category: Places
+
+## Shop — ELLE 行李箱
+
+- Screenshot: Product recommendation
+- AI intent: Shop
+- Expected actions: Save, Research Product
+- Expected Saved category: Products
+
+## Remember — 女性书单 | 女孩保持阅读
 
 - Screenshot: Reading-list recommendation
 - AI intent: Remember
@@ -47,7 +47,7 @@ Inbox, which prevents duplicate scenarios and preserves the user's records.
 
 1. Start on All to explain the five intent categories.
 2. Switch between category tabs to demonstrate automatic organization.
-3. Open 北京咖啡地图 and demonstrate Open Map, Research Trip, and Save Place.
+3. Open 北京意面封神榜 and demonstrate Open Map, Research Trip, and Save Place.
 4. Save the Shop, Go, and Remember examples, then verify Products, Places, and Notes.
 5. Open Attend and Do to demonstrate calendar and reminder confirmation flows.
 

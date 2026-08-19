@@ -21,6 +21,7 @@ export function EmptyState() {
         </div>
         <h2 className="mx-auto mt-10 max-w-3xl font-display text-4xl font-semibold tracking-[-0.03em] text-[#713b2b]">Collect ideas.<br />Save moments.</h2>
         <p className="mx-auto mt-4 max-w-xl text-lg leading-7 text-muted-foreground">Turn screenshots into things you can use.</p>
+        <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-[#826e62]">No screenshots yet. Upload your first screenshot and AI will organize it for you.</p>
         <UploadButton className="mt-8 min-w-72" />
         <p className="mt-4 text-sm text-muted-foreground">Or paste with ⌘V / Ctrl+V</p>
         <div className="mt-14 flex flex-wrap justify-center divide-x divide-[#e5d3c2]">

@@ -80,5 +80,3 @@ export const DEMO_INBOX_SCENARIOS: readonly DemoInboxScenario[] = [
     },
   },
 ];
-
-export const isDemoModeEnabled = process.env.NEXT_PUBLIC_AI_INBOX_DEMO_MODE === "true";

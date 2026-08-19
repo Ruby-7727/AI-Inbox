@@ -14,6 +14,7 @@ import { LowConfidenceResult } from "@/components/analysis/low-confidence-result
 import { ItemVisual } from "@/components/cards/item-visual";
 import { DeleteItemButton } from "@/components/inbox/item-management-menu";
 import { mapSuggestedActions } from "@/lib/actions/mapper";
+import { isUserExecutableAction } from "@/lib/actions/capabilities";
 import { isPlaceRecommendation } from "@/lib/actions/place-recommendation";
 import { LOW_CONFIDENCE_THRESHOLD } from "@/lib/analysis/uncertainty";
 import { shouldShowItemVisual } from "@/lib/demo/visuals";
@@ -45,7 +46,7 @@ export function PersistedItemDetail({ id }: { id: string }) {
     itemTitle: item.title,
     itemDescription: item.summary,
     inboxItemId: item.id,
-  });
+  }).filter(isUserExecutableAction);
   const supportsSave = item.intent === "shop" || item.intent === "remember";
   const supportsPlaceSave = item.intent === "go" && isPlaceRecommendation({
     title: item.title,

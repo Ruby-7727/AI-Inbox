@@ -30,7 +30,8 @@ export function InboxContent() {
 
   useEffect(() => {
     let active = true;
-    void Promise.all([getInboxItems().then(ensureDemoInboxItems), getSavedItems()])
+    const demoMode = new URLSearchParams(window.location.search).get("demo") === "1";
+    void Promise.all([getInboxItems().then((inboxItems) => ensureDemoInboxItems(inboxItems, { enabled: demoMode })), getSavedItems()])
       .then(([inboxData, savedData]) => {
         if (!active) return;
         setItems(inboxData);
@@ -69,7 +70,7 @@ export function InboxContent() {
         ))}
       </nav>
       <section className="mt-8">
-        <div className="flex items-end justify-between border-b border-[#e6d5c5] pb-4"><div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary/70">Your collection</p><h2 className="mt-1 font-display text-3xl font-semibold text-[#684334]">Recent moments</h2></div><p className="hidden text-sm text-muted-foreground sm:block">A visual archive of things worth keeping.</p></div>
+        <div className="flex items-end justify-between border-b border-[#e6d5c5] pb-4"><div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary/70">{items.length === 0 ? "Start here" : "Your collection"}</p><h2 className="mt-1 font-display text-3xl font-semibold text-[#684334]">{items.length === 0 ? "Your collection" : "Recent moments"}</h2></div><p className="hidden text-sm text-muted-foreground sm:block">{items.length === 0 ? "No screenshots yet. Upload your first screenshot and AI will organize it for you." : "A visual archive of things worth keeping."}</p></div>
         {items.length === 0 ? <EmptyState /> : visibleItems.length === 0 ? (
           <InboxCategoryEmptyState filter={activeFilter} />
         ) : (

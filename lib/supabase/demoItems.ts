@@ -1,4 +1,4 @@
-import { DEMO_INBOX_SCENARIOS, isDemoModeEnabled } from "@/lib/demo/inbox-scenarios";
+import { DEMO_INBOX_SCENARIOS } from "@/lib/demo/inbox-scenarios";
 import { ensureAnonymousUser } from "@/lib/supabase/auth";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import type { InboxItemRow } from "@/types/database";
@@ -15,10 +15,10 @@ const legacyDemoTitles = new Set([
 const currentDemoTitles = new Set(DEMO_INBOX_SCENARIOS.map(({ title }) => title));
 
 /** Prepares the portfolio dataset without removing genuine uploaded items. */
-export function ensureDemoInboxItems(existingItems: InboxItemRow[]) {
-  if (!isDemoModeEnabled) return Promise.resolve(existingItems);
-
+export function ensureDemoInboxItems(existingItems: InboxItemRow[], { enabled = false }: { enabled?: boolean } = {}) {
   const genuineItems = existingItems.filter((item) => !isRecognizedDemo(item) && !isDevelopmentArtifact(item));
+  if (!enabled) return Promise.resolve(sortNewestFirst(genuineItems));
+
   const currentDemoItems = existingItems.filter((item) => currentDemoTitles.has(item.title) && !item.image_path);
   if (currentDemoItems.length === DEMO_INBOX_SCENARIOS.length) return Promise.resolve(sortNewestFirst([...genuineItems, ...currentDemoItems]));
 

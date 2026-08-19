@@ -14,6 +14,7 @@ import { ItemVisual } from "@/components/cards/item-visual";
 import { IntentBadge, intentLabel } from "@/components/cards/intent-badge";
 import { DeleteItemButton } from "@/components/inbox/item-management-menu";
 import { mapSuggestedActions } from "@/lib/actions/mapper";
+import { isUserExecutableAction } from "@/lib/actions/capabilities";
 import { isPlaceRecommendation } from "@/lib/actions/place-recommendation";
 import { LOW_CONFIDENCE_THRESHOLD } from "@/lib/analysis/uncertainty";
 import { shouldShowItemVisual } from "@/lib/demo/visuals";
@@ -90,7 +91,7 @@ function AnalysisResultCard({ analysis }: { analysis: AnalyzeApiResponse | null 
     itemTitle: result.title,
     itemDescription: result.summary,
     inboxItemId: analysis.id,
-  });
+  }).filter(isUserExecutableAction);
   const supportsSave = result.intent === "shop" || result.intent === "remember";
   const supportsPlaceSave = result.intent === "go" && isPlaceRecommendation({
     title: result.title,

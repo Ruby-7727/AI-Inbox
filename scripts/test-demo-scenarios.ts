@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { DEMO_INBOX_SCENARIOS } from "../lib/demo/inbox-scenarios";
 import { getDemoVisual, shouldShowItemVisual } from "../lib/demo/visuals";
 import { getDetectedSignals } from "../lib/analysis/explainability";
+import { ensureDemoInboxItems } from "../lib/supabase/demoItems";
 import { inboxRowToCard } from "../lib/supabase/presenters";
 import { savedCategoryForIntent } from "../lib/supabase/savedCategories";
 import type { InboxItemRow } from "../types/database";
@@ -31,6 +32,7 @@ assert.deepEqual(DEMO_INBOX_SCENARIOS.map(({ title }) => title), [
   "ELLE 行李箱",
   "女性书单 | 女孩保持阅读",
 ]);
+const demoRows: InboxItemRow[] = [];
 for (const [index, { key, ...scenario }] of DEMO_INBOX_SCENARIOS.entries()) {
   const timestamp = new Date(Date.UTC(2026, 7, 18, 12, index)).toISOString();
   const row: InboxItemRow = {
@@ -46,6 +48,7 @@ for (const [index, { key, ...scenario }] of DEMO_INBOX_SCENARIOS.entries()) {
     created_at: timestamp,
     updated_at: timestamp,
   };
+  demoRows.push(row);
   assert.deepEqual(inboxRowToCard(row).actions.map(({ label }) => label), expectedActions[key]);
   assert.ok(getDetectedSignals({
     intent: row.intent,
@@ -57,8 +60,17 @@ for (const [index, { key, ...scenario }] of DEMO_INBOX_SCENARIOS.entries()) {
   if (key !== "do") assert.ok(getDemoVisual(row.title));
 }
 
+const uploadedRow = { ...demoRows[0], id: "00000000-0000-4000-8000-000000000099", image_path: "user-id/upload.png" };
+
 assert.equal(savedCategoryForIntent("shop"), "product");
 assert.equal(savedCategoryForIntent("go"), "place");
 assert.equal(savedCategoryForIntent("remember"), "note");
 
-console.log("Demo scenario tests passed.");
+void Promise.all([
+  ensureDemoInboxItems(demoRows),
+  ensureDemoInboxItems([...demoRows, uploadedRow]),
+]).then(([publicDemoItems, publicItemsWithUpload]) => {
+  assert.deepEqual(publicDemoItems, []);
+  assert.deepEqual(publicItemsWithUpload, [uploadedRow]);
+  console.log("Demo scenario tests passed.");
+});
