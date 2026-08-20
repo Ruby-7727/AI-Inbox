@@ -26,7 +26,7 @@ But screenshots quickly become a forgotten information graveyard. They are diffi
 
 ## Solution
 
-AI Inbox transforms screenshots into structured personal knowledge.
+AI Inbox transforms screenshots from passive storage into actionable personal information.
 
 It combines screenshot understanding with an intent-based action layer to:
 
@@ -35,6 +35,25 @@ It combines screenshot understanding with an intent-based action layer to:
 - Extract useful, grounded information
 - Explain how the content was organized
 - Recommend relevant next actions while keeping the user in control
+
+---
+
+## Live Demo
+
+Try the deployed version:
+
+https://ai-inbox-sage.vercel.app
+
+---
+
+## Demo Flow
+
+The core product experience:
+
+1. Upload a screenshot
+2. AI understands the content and identifies user intent
+3. Information is organized into actionable categories
+4. Users revisit saved items and complete relevant actions
 
 ---
 
@@ -50,11 +69,9 @@ The experience is designed to turn a familiar, low-effort behavior into an organ
 
 ---
 
-## Product Demo
+## Product Demo Scenarios
 
-> **Demo GIF coming soon**
-
-The core experience follows one clear flow:
+The core product experience:
 
 ```text
 Upload screenshot
@@ -66,7 +83,15 @@ Intent classification
 Action suggestion
 ```
 
-The portfolio demo includes five representative scenarios: an event, a task, a place recommendation, a product, and a reading list.
+The portfolio demo demonstrates five representative scenarios covering:
+
+- Events
+- Tasks
+- Places
+- Products
+- Reading lists
+
+These scenarios are available in the demo environment for product walkthrough purposes.
 
 ---
 
@@ -98,6 +123,7 @@ AI Inbox turns recognized information into useful next steps:
 - Set Reminder
 - Open Map
 - Research Product or Trip
+- Search saved information
 - Save for later
 
 Actions are suggested—not automatically executed—so the user remains in control.
@@ -182,6 +208,7 @@ AI Inbox focuses on:
 
 - Better OCR and mixed-layout extraction
 - Personalized AI suggestions based on user behavior
+- Proactive reminders and browser notifications
 - Cross-platform screenshot sync
 - Native calendar and productivity integrations
 - Live web research with clear source attribution
